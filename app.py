@@ -1080,67 +1080,167 @@ def pagina_generar():
 
     disponibles = generador.anexos_disponibles()
     if not disponibles:
-        st.error("No hay plantillas. Ejecuta `herramientas/construir_plantillas.py` primero.")
+        st.error(
+            "No hay plantillas. Ejecuta "
+            "`herramientas/construir_plantillas.py` primero."
+        )
         return
 
-    st.caption("Marca los anexos y pulsa Generar. Los que se emiten por estudiante, "
-               "por mes o por jornada producen un archivo por cada uno.")
+    st.caption(
+        "Marca los anexos y pulsa Generar. Los que se emiten por estudiante, "
+        "por mes o por jornada producen un archivo por cada uno."
+    )
 
-    seleccion = []
-    columnas = st.columns(3)
-    for i, anexo in enumerate(disponibles):
-        col = columnas[i % 3]
-        if col.checkbox(f"**Anexo {anexo.clave}** · {anexo.titulo}",
-                        key=f"chk_{anexo.clave}", help=anexo.descripcion):
-            seleccion.append(anexo.clave)
+    # ------------------------------------------------------------------
+    # Inicializar estados de los checkboxes antes de crearlos
+    # ------------------------------------------------------------------
+    for anexo in disponibles:
+        clave = f"chk_{anexo.clave}"
+        if clave not in st.session_state:
+            st.session_state[clave] = False
 
-    c1, c2, c3 = st.columns([1, 1, 2])
-    if c1.button("Seleccionar todos"):
+    # ------------------------------------------------------------------
+    # Funciones para seleccionar / limpiar
+    # ------------------------------------------------------------------
+    def seleccionar_todos():
         for anexo in disponibles:
             st.session_state[f"chk_{anexo.clave}"] = True
-        st.rerun()
-    if c2.button("Limpiar"):
+
+    def limpiar_todos():
         for anexo in disponibles:
             st.session_state[f"chk_{anexo.clave}"] = False
-        st.rerun()
-    a_pdf = c3.checkbox("Generar también en PDF",
-                        help="Usa Word si está instalado; si no, LibreOffice.")
 
-    if st.button("Generar", type="primary", disabled=not seleccion):
+    # ------------------------------------------------------------------
+    # Botones de selección
+    # ------------------------------------------------------------------
+    c1, c2, c3 = st.columns([1, 1, 2])
+
+    c1.button(
+        "Seleccionar todos",
+        key="btn_seleccionar_todos",
+        on_click=seleccionar_todos,
+    )
+
+    c2.button(
+        "Limpiar",
+        key="btn_limpiar_todos",
+        on_click=limpiar_todos,
+    )
+
+    a_pdf = c3.checkbox(
+        "Generar también en PDF",
+        help="Usa Word si está instalado; si no, LibreOffice.",
+    )
+
+    # ------------------------------------------------------------------
+    # Checkboxes de anexos
+    # ------------------------------------------------------------------
+    seleccion = []
+
+    columnas = st.columns(3)
+
+    for i, anexo in enumerate(disponibles):
+        col = columnas[i % 3]
+
+        marcado = col.checkbox(
+            f"**Anexo {anexo.clave}** · {anexo.titulo}",
+            key=f"chk_{anexo.clave}",
+            help=anexo.descripcion,
+        )
+
+        if marcado:
+            seleccion.append(anexo.clave)
+
+    # ------------------------------------------------------------------
+    # Generar documentos
+    # ------------------------------------------------------------------
+    if st.button(
+        "Generar",
+        type="primary",
+        disabled=not seleccion,
+        key="btn_generar_anexos",
+    ):
         carpeta = DIR_SALIDA
+
         if carpeta.exists():
             shutil.rmtree(carpeta)
+
         carpeta.mkdir(parents=True)
 
         with st.spinner("Generando documentos…"):
-            resultado = generador.generar(seleccion, carpeta, a_pdf=a_pdf)
+            resultado = generador.generar(
+                seleccion,
+                carpeta,
+                a_pdf=a_pdf,
+            )
 
-        docx = [a for a in resultado["archivos"] if a.suffix == ".docx"]
-        pdfs = [a for a in resultado["archivos"] if a.suffix == ".pdf"]
-        st.success(f"{len(docx)} documentos Word" +
-                   (f" y {len(pdfs)} PDF" if pdfs else "") + " generados.")
+        docx = [
+            a for a in resultado["archivos"]
+            if a.suffix == ".docx"
+        ]
+
+        pdfs = [
+            a for a in resultado["archivos"]
+            if a.suffix == ".pdf"
+        ]
+
+        st.success(
+            f"{len(docx)} documentos Word"
+            + (f" y {len(pdfs)} PDF" if pdfs else "")
+            + " generados."
+        )
 
         for error in resultado["errores"]:
             st.warning(error)
 
         if resultado["archivos"]:
             buffer = io.BytesIO()
-            with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as z:
+
+            with zipfile.ZipFile(
+                buffer,
+                "w",
+                zipfile.ZIP_DEFLATED,
+            ) as z:
                 for archivo in resultado["archivos"]:
                     z.write(archivo, archivo.name)
-            st.download_button("Descargar todo en un ZIP", buffer.getvalue(),
-                               file_name="anexos_vinculacion.zip", mime="application/zip")
 
-    existentes = sorted(DIR_SALIDA.glob("*.*")) if DIR_SALIDA.exists() else []
+            st.download_button(
+                "Descargar todo en un ZIP",
+                buffer.getvalue(),
+                file_name="anexos_vinculacion.zip",
+                mime="application/zip",
+            )
+
+    # ------------------------------------------------------------------
+    # Documentos existentes
+    # ------------------------------------------------------------------
+    existentes = (
+        sorted(DIR_SALIDA.glob("*.*"))
+        if DIR_SALIDA.exists()
+        else []
+    )
+
     if existentes:
         st.divider()
-        st.subheader(f"Documentos en la carpeta de salida ({len(existentes)})")
+
+        st.subheader(
+            f"Documentos en la carpeta de salida "
+            f"({len(existentes)})"
+        )
+
         st.caption(f"Ruta: `{DIR_SALIDA}`")
+
         for archivo in existentes:
             c1, c2 = st.columns([4, 1])
+
             c1.write(archivo.name)
-            c2.download_button("Descargar", archivo.read_bytes(), file_name=archivo.name,
-                               key=f"dl_{archivo.name}")
+
+            c2.download_button(
+                "Descargar",
+                archivo.read_bytes(),
+                file_name=archivo.name,
+                key=f"dl_{archivo.name}",
+            )
 
 
 # --------------------------------------------------------------------------
