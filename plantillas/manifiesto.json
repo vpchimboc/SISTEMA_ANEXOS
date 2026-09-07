@@ -1,0 +1,632 @@
+{
+  "ANEXO 1": {
+    "archivo": "anexo_1.docx",
+    "origen": "ANEXO 1/ANEXO 1.docx",
+    "logos": [
+      {
+        "indice": 0,
+        "logico": "institucional",
+        "ancho_cm": 4.39,
+        "alto_cm": 1.34,
+        "media": "word/media/image1.png",
+        "en_cuerpo": false
+      },
+      {
+        "indice": 1,
+        "logico": "senescyt",
+        "ancho_cm": 3.19,
+        "alto_cm": 1.93,
+        "media": "word/media/image2.jpg",
+        "en_cuerpo": false
+      }
+    ],
+    "reglas_aplicadas": {
+      "re:“?Mantenimiento\\ de\\ la\\ Infraestructura\\ Tecnológica\\ y\\ Red\\ de\\ datos\\ de\\ Laboratorios\\ de\\ Computación\\ de\\ las\\ Unidades\\ Educativas\\ Fiscales\\ de\\ la\\ Coordinación\\ de\\ Educación\\ Zonal\\ 6”\\ \\-\\ Unidad\\ Educativa\\ Luis\\ Monsalve\\ Pozo\\ \\-\\ Fase\\ V”?": 1,
+      "Tecnología Superior Administración de Infraestructura y Plataformas Tecnológicas": 2,
+      "Cuenca, 22  de septiembre de 2025": 1,
+      "Magister,": 1,
+      "DELEGADO como DOCENTE DE APOYO en el proyecto": 1,
+      "Ing. Mónica Fernanda Galarza Rodas Mgtr.": 1,
+      "COORDINADORA DE LA CARRERA TAIPT": 1,
+      "Mónica Galarza Rodas": 2,
+      "DOCENTE DE APOYO": 1,
+      "Fecha: 22/09/2025": 1
+    }
+  },
+  "ANEXO 2": {
+    "archivo": "anexo_2.docx",
+    "origen": "ANEXO 2/ANEXO 2_Convocatoria.docx",
+    "logos": [
+      {
+        "indice": 0,
+        "logico": "senescyt",
+        "ancho_cm": 3.19,
+        "alto_cm": 1.67,
+        "media": "word/media/image1.jpg",
+        "en_cuerpo": false
+      },
+      {
+        "indice": 1,
+        "logico": "institucional",
+        "ancho_cm": 4.39,
+        "alto_cm": 1.34,
+        "media": "word/media/image2.png",
+        "en_cuerpo": false
+      }
+    ],
+    "reglas_aplicadas": {
+      "re:“?Mantenimiento\\ de\\ la\\ infraestructura\\ tecnológica\\ y\\ red\\ de\\ datos\\ de\\ laboratorios\\ de\\ computación\\ \\ \\ de\\ las\\ unidades\\ educativas\\ de\\ la\\ Coordinación\\ de\\ Educación\\ Zonal\\ 6”\\ \\-\\ Fase\\ V\\ Unidad\\ Educativa\\ Luis\\ Monsalve\\ Pozo”?": 1,
+      "Tecnología Superior en Administración de Infraestructura y Plataformas Tecnológicas": 1,
+      "CONVOCATORIA – TAIPT – 2025 – 02": 1,
+      "Cuenca, 23 de septiembre de 2025": 1,
+      "estudiantes de cuarto ciclo en adelante de la": 1,
+      "que se desarrollará en conjunto con la Unidad Educativa Luis Monsalve Pozo,": 1,
+      "La fecha máxima en la que se receptarán las solicitudes es el 14 de agosto de 2025.": 1,
+      "Ing. Jonnathan Fernando Nivicela Arbito (jonnathan.nivicela@ucuenca.edu.ec)": 1,
+      "Ing. Jonnathan Fernando Nivicela Arbito,": 1,
+      "CARRERA TAIPT": 1
+    }
+  },
+  "ANEXO 3": {
+    "archivo": "anexo_3.docx",
+    "origen": "ANEXO 3/ANEXO 3.docx",
+    "logos": [
+      {
+        "indice": 0,
+        "logico": "institucional",
+        "ancho_cm": 4.39,
+        "alto_cm": 1.34,
+        "media": "word/media/image1.png",
+        "en_cuerpo": false
+      },
+      {
+        "indice": 1,
+        "logico": "senescyt",
+        "ancho_cm": 2.86,
+        "alto_cm": 1.61,
+        "media": "word/media/image2.jpg",
+        "en_cuerpo": false
+      }
+    ],
+    "reglas_aplicadas": {
+      "re:“?Mantenimiento\\ de\\ la\\ infraestructura\\ tecnológica\\ y\\ red\\ de\\ datos\\ de\\ laboratorios\\ de\\ computación\\ \\ \\ de\\ las\\ unidades\\ educativas\\ de\\ la\\ Coordinación\\ de\\ Educación\\ Zonal\\ 6”\\ \\-\\ Fase\\ V\\ Unidad\\ Educativa\\ Luis\\ Monsalve\\ Pozo”?": 1,
+      "Tecnología Superior en Administración de Infraestructura y Plataformas Tecnológicas": 2,
+      "Cuenca, 24 de septiembre de 2025": 1,
+      "Ingeniero": 1,
+      "Jonnathan Fernando Nivicela Arbito": 1,
+      "semestre 30-2025-2P": 1,
+      "paralelo “A”": 1,
+      "jornada Matutina": 1,
+      "Molina Ortiz Jostin Alexander": 2,
+      "0151181898": 2
+    }
+  },
+  "ANEXO 4": {
+    "archivo": "anexo_4.docx",
+    "origen": "ANEXO 4/ANEXO 4.docx",
+    "logos": [
+      {
+        "indice": 0,
+        "logico": "institucional",
+        "ancho_cm": 4.39,
+        "alto_cm": 1.34,
+        "media": "word/media/image1.png",
+        "en_cuerpo": false
+      },
+      {
+        "indice": 1,
+        "logico": "senescyt",
+        "ancho_cm": 2.86,
+        "alto_cm": 1.61,
+        "media": "word/media/image2.jpg",
+        "en_cuerpo": false
+      }
+    ],
+    "reglas_aplicadas": {
+      "re:“?Mantenimiento\\ de\\ la\\ infraestructura\\ tecnológica\\ y\\ red\\ de\\ datos\\ de\\ laboratorios\\ de\\ computación\\ \\ \\ de\\ las\\ unidades\\ educativas\\ de\\ la\\ Coordinación\\ de\\ Educación\\ Zonal\\ 6”\\ \\-\\ Fase\\ V\\ Unidad\\ Educativa\\ Luis\\ Monsalve\\ Pozo”?": 1,
+      "Cuenca, 25 de septiembre de 2025": 1,
+      "Señor": 1,
+      "Estudiante de la carrera TAIPT": 1,
+      "ha designado como director del proyecto al Ing. Williams Trelles Ávila": 1,
+      "del proyecto es Mgtr. Carlos Gonzalo Morales Figueroa.": 1,
+      "Al finalizar las 100 horas": 1,
+      "Ing. Jonnathan Fernando Nivicela Arbito": 1,
+      "Carrera de TAIPT": 1,
+      "Fecha: 25 de septiembre de 2025": 1,
+      "Jostin Alexander Molina Ortiz": 2
+    }
+  },
+  "ANEXO 5": {
+    "archivo": "anexo_5.docx",
+    "origen": "ANEXO 5/ANEXO 5.docx",
+    "logos": [
+      {
+        "indice": 0,
+        "logico": "institucional",
+        "ancho_cm": 4.39,
+        "alto_cm": 1.34,
+        "media": "word/media/image1.png",
+        "en_cuerpo": true
+      },
+      {
+        "indice": 1,
+        "logico": "senescyt",
+        "ancho_cm": 3.19,
+        "alto_cm": 1.93,
+        "media": "word/media/image2.jpg",
+        "en_cuerpo": true
+      }
+    ],
+    "reglas_aplicadas": {
+      "Cuenca, 25 de septiembre de 2025": 1,
+      "Magíster": 1,
+      "Mónica Galarza Rodas": 2,
+      "Ing. Jonnathan Fernando Nivicela Arbito": 1,
+      "RESPONSABLE DE PRÁCTICAS PRE PROFESIONALES DE SERVICIO COMUNITARIO TAIPT": 1,
+      "Fecha: 25 de septiembre de 2025": 1
+    }
+  },
+  "ANEXO 6": {
+    "archivo": "anexo_6.docx",
+    "origen": "ANEXO 6/ANEXO 6.docx",
+    "logos": [
+      {
+        "indice": 0,
+        "logico": "institucional",
+        "ancho_cm": 4.39,
+        "alto_cm": 1.34,
+        "media": "word/media/image1.png",
+        "en_cuerpo": false
+      },
+      {
+        "indice": 1,
+        "logico": "senescyt",
+        "ancho_cm": 2.97,
+        "alto_cm": 1.67,
+        "media": "word/media/image2.jpg",
+        "en_cuerpo": false
+      }
+    ],
+    "reglas_aplicadas": {
+      "re:“?Mantenimiento\\ de\\ la\\ infraestructura\\ tecnológica\\ y\\ red\\ de\\ datos\\ de\\ laboratorios\\ de\\ computación\\ \\ \\ de\\ las\\ unidades\\ educativas\\ de\\ la\\ Coordinación\\ de\\ Educación\\ Zonal\\ 6”\\ \\-\\ Fase\\ V\\ Unidad\\ Educativa\\ Luis\\ Monsalve\\ Pozo”?": 1,
+      "Ing. Mónica Galarza Rodas": 1,
+      "Unidad Educativa Luis Monsalve Pozo": 1,
+      "José Alfredo Murillo Quizhpi": 1,
+      "30-2025-2P": 1,
+      "26 de septiembre de 2025": 1,
+      "Ing. Jonnathan Fernando Nivicela Arbito": 1,
+      "Responsable de Vinculación de la carrera TAIPT": 1,
+      "Mgtr. Marilyn Salazar": 1
+    }
+  },
+  "ANEXO 6.1": {
+    "archivo": "anexo_6.1.docx",
+    "origen": "ANEXO 6/ANEXO 6.1.docx",
+    "logos": [
+      {
+        "indice": 0,
+        "logico": "institucional",
+        "ancho_cm": 4.39,
+        "alto_cm": 1.34,
+        "media": "word/media/image1.png",
+        "en_cuerpo": false
+      },
+      {
+        "indice": 1,
+        "logico": "senescyt",
+        "ancho_cm": 2.97,
+        "alto_cm": 1.67,
+        "media": "word/media/image2.jpg",
+        "en_cuerpo": false
+      }
+    ],
+    "reglas_aplicadas": {
+      "Ing. Mónica Galarza Rodas": 1,
+      "Ing. Williams Trelles Ávila": 1,
+      "Estudiante: Alexander Miguel Coloma Ortiz": 1,
+      "Fecha: 20/10/2025": 2
+    }
+  },
+  "ANEXO 6.2": {
+    "archivo": "anexo_6.2.docx",
+    "origen": "ANEXO 6/ANEXO 6.2.docx",
+    "logos": [
+      {
+        "indice": 0,
+        "logico": "institucional",
+        "ancho_cm": 4.39,
+        "alto_cm": 1.34,
+        "media": "word/media/image1.png",
+        "en_cuerpo": false
+      },
+      {
+        "indice": 1,
+        "logico": "senescyt",
+        "ancho_cm": 2.97,
+        "alto_cm": 1.67,
+        "media": "word/media/image2.jpg",
+        "en_cuerpo": false
+      }
+    ],
+    "reglas_aplicadas": {
+      "Ing. Mónica Galarza Rodas": 1,
+      "Ing. Williams Trelles Ávila": 1,
+      "Estudiante: José Alfredo Murillo Quizhpi": 1,
+      "Fecha: 15/12/2025": 2
+    }
+  },
+  "ANEXO 7": {
+    "archivo": "anexo_7.docx",
+    "origen": "ANEXO 7/ANEXO 7_PlanificacionMes 01.docx",
+    "logos": [
+      {
+        "indice": 0,
+        "logico": "senescyt",
+        "ancho_cm": 5.64,
+        "alto_cm": 1.38,
+        "media": "word/media/image1.jpg",
+        "en_cuerpo": false
+      },
+      {
+        "indice": 1,
+        "logico": "institucional",
+        "ancho_cm": 4.39,
+        "alto_cm": 1.34,
+        "media": "word/media/image2.png",
+        "en_cuerpo": false
+      }
+    ],
+    "reglas_aplicadas": {
+      "re:“?Mantenimiento\\ de\\ la\\ infraestructura\\ tecnológica\\ y\\ red\\ de\\ datos\\ de\\ laboratorios\\ de\\ computación\\ \\ \\ de\\ las\\ unidades\\ educativas\\ de\\ la\\ Coordinación\\ de\\ Educación\\ Zonal\\ 6”\\ \\-\\ Fase\\ V\\ Unidad\\ Educativa\\ Luis\\ Monsalve\\ Pozo”?": 2,
+      "Empresa/Institución: Unidad Educativa Luis Monsalve Pozo": 1,
+      "Director del proyecto: Mgtr. Williams Hidalgo Trelles Avila": 1,
+      "Fecha Planificación: 26/09/2025": 1,
+      "Mes/año Planificado: Septiembre 2025": 1,
+      "Mgtr. Williams Hidalgo Trelles Avila": 1
+    }
+  },
+  "ANEXO 8": {
+    "archivo": "anexo_8.docx",
+    "origen": "ANEXO 8/ANEXO 8.docx",
+    "logos": [
+      {
+        "indice": 0,
+        "logico": "senescyt",
+        "ancho_cm": 5.54,
+        "alto_cm": 1.2,
+        "media": "word/media/image1.jpg",
+        "en_cuerpo": false
+      },
+      {
+        "indice": 1,
+        "logico": "institucional",
+        "ancho_cm": 4.39,
+        "alto_cm": 1.34,
+        "media": "word/media/image2.png",
+        "en_cuerpo": false
+      }
+    ],
+    "reglas_aplicadas": {
+      "re:“?Mantenimiento\\ de\\ la\\ infraestructura\\ tecnológica\\ y\\ red\\ de\\ datos\\ de\\ laboratorios\\ de\\ computación\\ \\ \\ de\\ las\\ unidades\\ educativas\\ de\\ la\\ Coordinación\\ de\\ Educación\\ Zonal\\ 6”\\ \\-\\ Fase\\ V\\ Unidad\\ Educativa\\ Luis\\ Monsalve\\ Pozo”?": 1,
+      "Entidad Beneficiaria: Unidad Educativa Luis Monsalve Pozo, Coordinación de Educación Zonal 6": 1,
+      "re:Nombre de Estudiante:\\s*Jose Alfredo Murillo Quizhpi": 1,
+      "Nro de Cédula: 0107006686": 1,
+      "Murillo Quizhpi Jose Alfredo": 1,
+      "Mgtr. Carlos Gonzalo Morales Figueroa": 1,
+      "Mgtr. Mónica Galarza Rodas": 1,
+      "Mgtr. Williams Hidalgo Trelles Ávila": 1
+    }
+  },
+  "ANEXO 9": {
+    "archivo": "anexo_9.docx",
+    "origen": "ANEXO 9/ANEXO 9_Seguimiento Planificacion Mes 01.docx",
+    "logos": [
+      {
+        "indice": 0,
+        "logico": "senescyt",
+        "ancho_cm": 5.54,
+        "alto_cm": 1.2,
+        "media": "word/media/image1.jpg",
+        "en_cuerpo": false
+      },
+      {
+        "indice": 1,
+        "logico": "institucional",
+        "ancho_cm": 4.39,
+        "alto_cm": 1.34,
+        "media": "word/media/image2.png",
+        "en_cuerpo": false
+      }
+    ],
+    "reglas_aplicadas": {
+      "re:“?Mantenimiento\\ de\\ la\\ infraestructura\\ tecnológica\\ y\\ red\\ de\\ datos\\ de\\ laboratorios\\ de\\ computación\\ \\ \\ de\\ las\\ unidades\\ educativas\\ de\\ la\\ Coordinación\\ de\\ Educación\\ Zonal\\ 6”\\ \\-\\ Fase\\ V\\ Unidad\\ Educativa\\ Luis\\ Monsalve\\ Pozo”?": 1,
+      "Empresa/Institución: Unidad Educativa Luis Monsalve Pozo": 1,
+      "re:Mes:\\s*Septiembre 2025": 1,
+      "Fecha de Seguimiento: 01/10/2025": 1,
+      "Williams Trelles Ávila": 1,
+      "Mgtr. Williams Hidalgo Trelles Avila": 1
+    }
+  },
+  "ANEXO 10": {
+    "archivo": "anexo_10.docx",
+    "origen": "ANEXO 10/ANEXO 10_Informe_Plantilla.docx",
+    "logos": [
+      {
+        "indice": 0,
+        "logico": "senescyt",
+        "ancho_cm": 5.54,
+        "alto_cm": 1.2,
+        "media": "word/media/image2.jpg",
+        "en_cuerpo": false
+      },
+      {
+        "indice": 1,
+        "logico": "institucional",
+        "ancho_cm": 4.39,
+        "alto_cm": 1.34,
+        "media": "word/media/image3.png",
+        "en_cuerpo": false
+      }
+    ],
+    "reglas_aplicadas": {
+      "Cuenca, 27/05/2024": 1,
+      "Mgtr. Williams Hidalgo Trelles Avila": 2,
+      "Calle Virgen  del Rosario y Santa Catalina": 1,
+      "Mgtr. Mónica Fernanda Galarza Rodas": 1,
+      "Mgtr. Mónica Galarza Rodas": 1,
+      "Ismael Alejandro Sevillano Guachichullca": 2,
+      "Mgtr. Carlos Gonzalo Morales Figueroa": 1,
+      "100 horas": 1,
+      "18/08/2025": 1,
+      "31/10/2025": 1
+    }
+  },
+  "ANEXO 11": {
+    "archivo": "anexo_11.docx",
+    "origen": "ANEXO 11/ANEXO 11.docx",
+    "logos": [
+      {
+        "indice": 0,
+        "logico": "senescyt",
+        "ancho_cm": 5.54,
+        "alto_cm": 1.2,
+        "media": "word/media/image2.jpg",
+        "en_cuerpo": false
+      }
+    ],
+    "reglas_aplicadas": {
+      "re:Nombres Completos:\\s*Jose Alfredo Murillo Quizhpi": 1,
+      "Nº de Cédula: 0107006686": 1,
+      "E- Mail: josea.murillo.est@tecazuay.edu.ec": 1,
+      "Carrera: Administración de Infraestructura y Plataformas Tecnológicas": 1,
+      "Fecha de Inicio: 29/09/2025": 1,
+      "Fecha de Finalización: 12/12/2025": 1,
+      "re:Número Total de Horas:(\\s*)100": 1,
+      "Fecha de Evaluación: 15/12/2025": 1,
+      "Obteniendo un promedio de 20/20, con lo que APRUEBA": 1,
+      "Mgtr. Mónica Galarza Rodas": 1,
+      "Mgtr. Williams Hidalgo Trelles Ávila": 1
+    }
+  },
+  "ANEXO 12": {
+    "archivo": "anexo_12.docx",
+    "origen": "ANEXO 12/ANEXO 12_RegistroBeneficiarios_Apoyo1.docx",
+    "logos": [
+      {
+        "indice": 0,
+        "logico": "institucional",
+        "ancho_cm": 4.39,
+        "alto_cm": 1.34,
+        "media": "word/media/image1.png",
+        "en_cuerpo": false
+      },
+      {
+        "indice": 1,
+        "logico": "senescyt",
+        "ancho_cm": 3.5,
+        "alto_cm": 1.97,
+        "media": "word/media/image2.jpg",
+        "en_cuerpo": false
+      }
+    ],
+    "reglas_aplicadas": {
+      "re:“?Mantenimiento\\ de\\ la\\ infraestructura\\ tecnológica\\ y\\ red\\ de\\ datos\\ de\\ laboratorios\\ de\\ computación\\ \\ \\ de\\ las\\ unidades\\ educativas\\ de\\ la\\ Coordinación\\ de\\ Educación\\ Zonal\\ 6”\\ \\-\\ Fase\\ V\\ Unidad\\ Educativa\\ Luis\\ Monsalve\\ Pozo”?": 1,
+      "re:FECHA:\\s*05/12/2025": 1,
+      "3 horas": 1,
+      "ENTIDAD BENEFICIARIA:  Unidad Educativa Luis Monsalve Pozo, Coordinación de Educación Zonal 6": 1,
+      "REPRESENTANTE: Mgtr. Carlos Gonzalo Morales Figueroa": 1,
+      "TELÉFONO: 0985991161": 1,
+      "E MAIL: ue.luismonsalve@gmail.com": 1,
+      "ASUNTO: Primera Jornada de Capacitación": 1,
+      "Mgtr. Carlos Gonzalo Morales Figueroa": 1,
+      "Mgtr. Williams Hidalgo Trelles Ávila": 1
+    }
+  },
+  "ANEXO 13": {
+    "archivo": "anexo_13.docx",
+    "origen": "ANEXO 13/ANEXO 13.docx",
+    "logos": [
+      {
+        "indice": 0,
+        "logico": "institucional",
+        "ancho_cm": 4.39,
+        "alto_cm": 1.34,
+        "media": "word/media/image1.png",
+        "en_cuerpo": false
+      },
+      {
+        "indice": 1,
+        "logico": "senescyt",
+        "ancho_cm": 3.5,
+        "alto_cm": 1.97,
+        "media": "word/media/image2.jpg",
+        "en_cuerpo": false
+      },
+      {
+        "indice": 2,
+        "logico": "senescyt",
+        "ancho_cm": 3.5,
+        "alto_cm": 1.97,
+        "media": "word/media/image2.jpg",
+        "en_cuerpo": false
+      }
+    ],
+    "reglas_aplicadas": {
+      "Mgtr. Williams Trelles Ávila": 2,
+      "Mgtr. Carlos Gonzalo Morales Figueroa": 1,
+      "30-2025-2P": 1,
+      "Unidad Educativa Luis Monsalve Pozo, Coordinación de Educación Zonal 6": 1,
+      "re:^Cuarto$": 1
+    }
+  },
+  "SELECCION": {
+    "archivo": "seleccion.docx",
+    "origen": "2 Informes Proceso Seleccion (RP).docx",
+    "logos": [
+      {
+        "indice": 0,
+        "logico": "institucional",
+        "ancho_cm": 4.39,
+        "alto_cm": 1.34,
+        "media": "word/media/image2.png",
+        "en_cuerpo": false
+      }
+    ],
+    "reglas_aplicadas": {
+      "Mgst.Verónica Chimbo Coronel": 1,
+      "Ing. Jessica Elizabeth Pinos Pinos. Mgtr.": 1,
+      "Mgtr. Victoria Marilyn Salazar Piña": 1,
+      "re:PLATAFORMA\\ WEB\\ DE\\ ANÁLISIS\\ DE\\ LOS\\ DATOS,\\ APLICANDO\\ TÉCNICAS\\ DE\\ MINERÍA\\ DE\\ DATOS\\ Y\\ APRENDIZAJE\\ DE\\ MÁQUINA,\\ PARA\\ LA\\ TOMA\\ DE\\ DECISIONES\\ DE\\ LA\\ FUNDACIÓN\\ MENSAJEROS\\ DE\\ LA\\ PAZ\\.?\\s*FASE 2\\.?": 1,
+      "re:“?PLATAFORMA\\ WEB\\ DE\\ ANÁLISIS\\ DE\\ LOS\\ DATOS,\\ APLICANDO\\ TÉCNICAS\\ DE\\ MINERÍA\\ DE\\ DATOS\\ Y\\ APRENDIZAJE\\ DE\\ MÁQUINA,\\ PARA\\ LA\\ TOMA\\ DE\\ DECISIONES\\ DE\\ LA\\ FUNDACIÓN\\ MENSAJEROS\\ DE\\ LA\\ PAZ\\.?”?\\s*FASE 2\\.?": 1,
+      "CARRERA DE BIG DATA": 1,
+      "Carrera: Big Data": 1,
+      "Fecha: 21/05/2026": 2
+    }
+  },
+  "SEGUIMIENTO": {
+    "archivo": "seguimiento.docx",
+    "origen": "3 ISTA_Formato_proyectos_vinculacion_informe_seguimiento.docm.docx",
+    "logos": [
+      {
+        "indice": 0,
+        "logico": "institucional",
+        "ancho_cm": 3.84,
+        "alto_cm": 1.35,
+        "media": "word/media/image1.png",
+        "en_cuerpo": false
+      }
+    ],
+    "reglas_aplicadas": {
+      "re:Ing\\.\\s+Freddy Vinicio Quito Baculima(?:\\.\\s*Mgtr\\.)?": 1,
+      "Ing. Verónica Chimbo, Mgtr.": 1,
+      "re:Plataforma\\ web\\ de\\ análisis\\ de\\ los\\ datos,\\ aplicando\\ técnicas\\ de\\ minería\\ de\\ datos\\ y\\ aprendizaje\\ automático\\ para\\ la\\ toma\\ de\\ decisiones\\ de\\ la\\ fundación\\ Mensajeros\\ de\\ la\\ Paz\\.?\\.?\\s*(?:Fase 2\\.?)?": 1,
+      "Aplicación de tecnologías para responder a las necesidades reales de los sectores más vulnerables.": 1,
+      "☐Asesoría Técnica": 1,
+      "☒Trabajo Comunitario": 1,
+      "☐Capacitación": 1,
+      "re:^Tecnología Superior en Big Data$": 1,
+      "Fundación Mensajeros de La Paz": 1,
+      "re:^3 Meses$": 1,
+      "re:Fecha de inicio de Proyecto:\\s*01/06/2026": 1,
+      "Fecha de fin planeado: 04/09/2026": 1,
+      "☐Nacional": 1,
+      "☒Provincial": 1,
+      "☐Cantonal": 1,
+      "☐Parroquial": 1,
+      "☐Institucional": 1,
+      "☐Internacional": 1,
+      "Fortalecer los procesos administrativos y de salud en la Fundación Mensajeros de la Paz mediante el desarrollo de una aplicación de big data en la web que facilite el proceso de toma de decisiones. .": 1,
+      "Fecha de seguimiento: 15/07/2026": 1,
+      "Fecha de Entrega: 15/07/2026": 1
+    }
+  },
+  "FINAL": {
+    "archivo": "final.docx",
+    "origen": "4 ISTA_Formato_proyectos_vinculacion_informe_final.docm.docx",
+    "logos": [
+      {
+        "indice": 0,
+        "logico": "institucional",
+        "ancho_cm": 4.39,
+        "alto_cm": 1.34,
+        "media": "word/media/image2.png",
+        "en_cuerpo": false
+      }
+    ],
+    "reglas_aplicadas": {
+      "re:Ing\\.\\s+Freddy Vinicio Quito Baculima(?:\\.\\s*Mgtr\\.)?": 1,
+      "Ing. Verónica Chimbo, Mgtr.": 1,
+      "re:Plataforma\\ web\\ de\\ análisis\\ de\\ los\\ datos,\\ aplicando\\ técnicas\\ de\\ minería\\ de\\ datos\\ y\\ aprendizaje\\ automático\\ para\\ la\\ toma\\ de\\ decisiones\\ de\\ la\\ fundación\\ Mensajeros\\ de\\ la\\ Paz\\.?\\.?\\s*(?:Fase 2\\.?)?": 1,
+      "Aplicación de tecnologías para responder a las necesidades reales de los sectores más vulnerables.": 1,
+      "☐Asesoría Técnica": 1,
+      "☒Trabajo Comunitario": 1,
+      "☐Capacitación": 1,
+      "re:^Tecnología Superior en Big Data$": 1,
+      "Fundación Mensajeros de La Paz": 1,
+      "re:^3 Meses$": 1,
+      "re:Fecha de inicio de Proyecto:\\s*01/06/2026": 1,
+      "Fecha de fin planeado: 04/09/2026": 1,
+      "☐Nacional": 1,
+      "☒Provincial": 1,
+      "☐Cantonal": 1,
+      "☐Parroquial": 1,
+      "☐Institucional": 1,
+      "☐Internacional": 1,
+      "Fortalecer los procesos administrativos y de salud en la Fundación Mensajeros de la Paz mediante el desarrollo de una aplicación de big data en la web que facilite el proceso de toma de decisiones. .": 1,
+      "☒Impacto Social": 1,
+      "☐Impacto Científico": 1,
+      "☐Impacto Económico": 1,
+      "☐Impacto Político": 1,
+      "☐Otro Impacto": 1,
+      "https://drive.google.com/drive/folders/1rtAtPpDK3RJxuushaHk_3Y0j2DmMdV3g": 1,
+      "Fecha de Entrega: 10/09/2026": 1
+    }
+  },
+  "SOCIALIZACION": {
+    "archivo": "socializacion.docx",
+    "origen": "5 Informe de Socialización.docx",
+    "logos": [
+      {
+        "indice": 0,
+        "logico": "institucional",
+        "ancho_cm": 3.19,
+        "alto_cm": 0.97,
+        "media": "word/media/image3.png",
+        "en_cuerpo": false
+      }
+    ],
+    "reglas_aplicadas": {
+      "re:Mgtr\\.\\s+Verónica Paulina Chimbo Coronel": 1,
+      "re:Ing\\.\\s+Freddy Vinicio Quito Baculima(?:\\.\\s*Mgtr\\.)?": 1,
+      "re:“?PLATAFORMA\\ WEB\\ DE\\ ANÁLISIS\\ DE\\ LOS\\ DATOS,\\ APLICANDO\\ TÉCNICAS\\ DE\\ MINERÍA\\ DE\\ DATOS\\ Y\\ APRENDIZAJE\\ DE\\ MÁQUINA,\\ PARA\\ LA\\ TOMA\\ DE\\ DECISIONES\\ DE\\ LA\\ FUNDACIÓN\\ MENSAJEROS\\ DE\\ LA\\ PAZ\\.?”?\\s*FASE 2\\.?": 1,
+      "Nombre de la carrera: Tecnología Superior en Big Data": 1,
+      "Nombre del director de carrera: Ing. Priscila Bernal. Mgtr.": 1,
+      "Fecha: 07/09/2026": 1,
+      "Fecha:10/09/2026": 1
+    }
+  },
+  "CONSTANCIA": {
+    "archivo": "constancia.docx",
+    "origen": "Constancia anexos big data.docx",
+    "logos": [
+      {
+        "indice": 0,
+        "logico": "institucional",
+        "ancho_cm": 5.99,
+        "alto_cm": 1.83,
+        "media": "word/media/image1.jpg",
+        "en_cuerpo": false
+      }
+    ],
+    "reglas_aplicadas": {
+      "re:DIRECTORA:\\s*Mgtr\\. Verónica Paulina Chimbo Coronel": 1,
+      "re:Mgtr\\.\\s+Verónica Paulina Chimbo Coronel": 1,
+      "Ing. Jéssica Elizabeth Pinos Pinos, Mgrt.": 1,
+      "re:Nombre del proyecto:\\s*“?PLATAFORMA\\ WEB\\ DE\\ ANÁLISIS\\ DE\\ LOS\\ DATOS,\\ APLICANDO\\ TÉCNICAS\\ DE\\ MINERÍA\\ DE\\ DATOS\\ Y\\ APRENDIZAJE\\ DE\\ MÁQUINA,\\ PARA\\ LA\\ TOMA\\ DE\\ DECISIONES\\ DE\\ LA\\ FUNDACIÓN\\ MENSAJEROS\\ DE\\ LA\\ PAZ\\.?”?\\s*Fase 2\\.?": 1,
+      "re:FECHA DE INICIO:\\s*01/06/2026": 1,
+      "FECHA DE FIN: 31/08/2026": 1,
+      "Fecha: 09/09/2026": 1,
+      "Fecha:  09/09/2026": 1
+    }
+  }
+}

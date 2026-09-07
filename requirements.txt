@@ -1,0 +1,13 @@
+# Sistema de Anexos de Vinculación
+# Instalar con:  pip install -r requirements.txt
+
+streamlit>=1.32
+pandas>=2.0
+openpyxl>=3.1          # leer los Excel con la lista de estudiantes
+python-docx>=1.1       # manipular el XML de Word
+docxtpl>=0.16          # plantillas Jinja2 sobre .docx conservando el formato
+Pillow>=10.0           # ajustar el formato de los logos
+
+# Solo Windows: convierte a PDF usando el Word que ya tienes instalado.
+# Si no lo instalas, el sistema intentará usar LibreOffice.
+docx2pdf>=0.1.8 ; sys_platform == "win32"
