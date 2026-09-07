@@ -274,9 +274,32 @@ def lista_de(base: dict, clave: str) -> list[dict]:
 
 def actividades_informe_de(base: dict, informe: str) -> list[dict]:
     filas = [dict(a) for a in base["_actividades_informe"] if a["informe"] == informe]
+    activos = {e["nombre_completo"].strip() for e in base["estudiantes"]}
     for fila in filas:
         fila["fecha"] = fecha_corta(fila["fecha"]) or fila["fecha"]
+        fila["responsables"] = _solo_activos(fila.get("responsables"), activos)
     return filas
+
+
+def _solo_activos(texto: str | None, activos: set[str]) -> str:
+    """
+    Quita de la lista de responsables a quien ya no participa.
+
+    La columna `responsables` guarda los nombres como texto, uno por línea, tal
+    y como estaban al derivar el informe. Si después se da de baja a un
+    estudiante, ese texto lo seguiría nombrando. Se filtra al mostrar en vez de
+    reescribir la tabla: así basta con desactivarlo, sin rederivar nada.
+
+    Si ninguna línea corresponde a un estudiante —por ejemplo cuando el
+    responsable es el docente— se devuelve el texto tal cual.
+    """
+    lineas = [l.strip() for l in (texto or "").split("\n") if l.strip()]
+    if not lineas:
+        return texto or ""
+    reconocidas = [l for l in lineas if l in activos]
+    if not reconocidas:
+        return texto or ""
+    return "\n".join(reconocidas)
 
 
 # --------------------------------------------------------------------------
@@ -385,6 +408,12 @@ def planificacion_de(base: dict, mes: dict, tipo: str) -> list[dict]:
             continue
         fuente = personas if tipo == "docente" else estudiantes
         persona = fuente.get(fila["persona_id"], {})
+        # Fila huérfana: apunta a alguien que ya no está o está inactivo.
+        # `planificacion.persona_id` no es clave foránea, así que al quitar un
+        # estudiante sus filas sobreviven; sin este filtro el Anexo 7 sacaría
+        # una línea con el nombre y la cédula en blanco.
+        if not persona:
+            continue
         actividad = actividades.get(fila["actividad_id"], {})
         filas.append({
             "resultado": fila["resultado"] or actividad.get("producto", ""),
@@ -416,6 +445,8 @@ def seguimiento_de(base: dict, mes: dict, docente: dict | None = None) -> list[d
         if permitidos is not None and fila["estudiante_id"] not in permitidos:
             continue
         estudiante = estudiantes.get(fila["estudiante_id"], {})
+        if not estudiante:
+            continue  # estudiante dado de baja: su fila no va en el Anexo 9
         actividad = actividades.get(fila["actividad_id"], {})
         filas.append({
             "descripcion": fila["descripcion"] or actividad.get("descripcion", ""),

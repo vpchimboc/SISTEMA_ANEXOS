@@ -1,5 +1,155 @@
-23:49:00  INICIO · 1 anexos seleccionados: S4
-23:49:00  ANEXO S4: empieza
-23:49:00      ok  SN 4 - Informe de Socializacion.docx
-23:49:00  ANEXO S4: 1 documento(s)
-23:49:00  FIN · 1 archivos, 0 avisos
+09:48:37  INICIO · 20 anexos seleccionados: 1, 2, 3, 4, 5, 6, 6.1, 6.2, 7, 8, 9, 10, 11, 12, 13, S1, S2, S3, S4, S5
+09:48:37  ANEXO 1: empieza
+09:48:38      ok  ANEXO 1 - Diego Armando Cale Pillco.docx
+09:48:38  ANEXO 1: 1 documento(s)
+09:48:38  ANEXO 2: empieza
+09:48:39      ok  ANEXO 2 - Convocatoria.docx
+09:48:39  ANEXO 2: 1 documento(s)
+09:48:39  ANEXO 3: empieza
+09:48:39      ok  ANEXO 3 - Nayely De Los Angeles Anguisaca Crespo.docx
+09:48:40      ok  ANEXO 3 - Daniela Estefania Arauz Beltran.docx
+09:48:41      ok  ANEXO 3 - Rafael Benjamin Armijos Merino.docx
+09:48:41      ok  ANEXO 3 - Cristhian Javier Campuzano Cevallos.docx
+09:48:42      ok  ANEXO 3 - Pablo Xavier Carpio Ruiz.docx
+09:48:43      ok  ANEXO 3 - Henry Josue Clavijo Llivichuzhca.docx
+09:48:43      ok  ANEXO 3 - Pablo Stiven Davila Cepeda.docx
+09:48:44      ok  ANEXO 3 - Jorge Alberto Esparza Castillo.docx
+09:48:44      ok  ANEXO 3 - Christopher Josue Llanos Ayala.docx
+09:48:45      ok  ANEXO 3 - Paul David Morocho Fajardo.docx
+09:48:46      ok  ANEXO 3 - Anahi Del Rosario Ochoa Gonzalez.docx
+09:48:46      ok  ANEXO 3 - Christian Santiago Sacaquirin Pereira.docx
+09:48:46  ANEXO 3: 12 documento(s)
+09:48:46  ANEXO 4: empieza
+09:48:47      ok  ANEXO 4 - Nayely De Los Angeles Anguisaca Crespo.docx
+09:48:48      ok  ANEXO 4 - Daniela Estefania Arauz Beltran.docx
+09:48:48      ok  ANEXO 4 - Rafael Benjamin Armijos Merino.docx
+09:48:49      ok  ANEXO 4 - Cristhian Javier Campuzano Cevallos.docx
+09:48:50      ok  ANEXO 4 - Pablo Xavier Carpio Ruiz.docx
+09:48:50      ok  ANEXO 4 - Henry Josue Clavijo Llivichuzhca.docx
+09:48:51      ok  ANEXO 4 - Pablo Stiven Davila Cepeda.docx
+09:48:52      ok  ANEXO 4 - Jorge Alberto Esparza Castillo.docx
+09:48:53      ok  ANEXO 4 - Christopher Josue Llanos Ayala.docx
+09:48:53      ok  ANEXO 4 - Paul David Morocho Fajardo.docx
+09:48:54      ok  ANEXO 4 - Anahi Del Rosario Ochoa Gonzalez.docx
+09:48:54      ok  ANEXO 4 - Christian Santiago Sacaquirin Pereira.docx
+09:48:54  ANEXO 4: 12 documento(s)
+09:48:54  ANEXO 5: empieza
+09:48:55      ok  ANEXO 5 - Diego Armando Cale Pillco.docx
+09:48:55  ANEXO 5: 1 documento(s)
+09:48:55  ANEXO 6: empieza
+09:48:56      ok  ANEXO 6 - Nayely De Los Angeles Anguisaca Crespo.docx
+09:48:57      ok  ANEXO 6 - Daniela Estefania Arauz Beltran.docx
+09:48:58      ok  ANEXO 6 - Rafael Benjamin Armijos Merino.docx
+09:48:58      ok  ANEXO 6 - Cristhian Javier Campuzano Cevallos.docx
+09:48:59      ok  ANEXO 6 - Pablo Xavier Carpio Ruiz.docx
+09:49:00      ok  ANEXO 6 - Henry Josue Clavijo Llivichuzhca.docx
+09:49:01      ok  ANEXO 6 - Pablo Stiven Davila Cepeda.docx
+09:49:02      ok  ANEXO 6 - Jorge Alberto Esparza Castillo.docx
+09:49:03      ok  ANEXO 6 - Christopher Josue Llanos Ayala.docx
+09:49:04      ok  ANEXO 6 - Paul David Morocho Fajardo.docx
+09:49:05      ok  ANEXO 6 - Anahi Del Rosario Ochoa Gonzalez.docx
+09:49:06      ok  ANEXO 6 - Christian Santiago Sacaquirin Pereira.docx
+09:49:06  ANEXO 6: 12 documento(s)
+09:49:06  ANEXO 6.1: empieza
+09:49:06      ok  ANEXO 6.1 - Nayely De Los Angeles Anguisaca Crespo.docx
+09:49:07      ok  ANEXO 6.1 - Daniela Estefania Arauz Beltran.docx
+09:49:08      ok  ANEXO 6.1 - Rafael Benjamin Armijos Merino.docx
+09:49:09      ok  ANEXO 6.1 - Cristhian Javier Campuzano Cevallos.docx
+09:49:10      ok  ANEXO 6.1 - Pablo Xavier Carpio Ruiz.docx
+09:49:10      ok  ANEXO 6.1 - Henry Josue Clavijo Llivichuzhca.docx
+09:49:11      ok  ANEXO 6.1 - Pablo Stiven Davila Cepeda.docx
+09:49:12      ok  ANEXO 6.1 - Jorge Alberto Esparza Castillo.docx
+09:49:13      ok  ANEXO 6.1 - Christopher Josue Llanos Ayala.docx
+09:49:13      ok  ANEXO 6.1 - Paul David Morocho Fajardo.docx
+09:49:14      ok  ANEXO 6.1 - Anahi Del Rosario Ochoa Gonzalez.docx
+09:49:15      ok  ANEXO 6.1 - Christian Santiago Sacaquirin Pereira.docx
+09:49:15  ANEXO 6.1: 12 documento(s)
+09:49:15  ANEXO 6.2: empieza
+09:49:16      ok  ANEXO 6.2 - Nayely De Los Angeles Anguisaca Crespo.docx
+09:49:16      ok  ANEXO 6.2 - Daniela Estefania Arauz Beltran.docx
+09:49:17      ok  ANEXO 6.2 - Rafael Benjamin Armijos Merino.docx
+09:49:18      ok  ANEXO 6.2 - Cristhian Javier Campuzano Cevallos.docx
+09:49:19      ok  ANEXO 6.2 - Pablo Xavier Carpio Ruiz.docx
+09:49:20      ok  ANEXO 6.2 - Henry Josue Clavijo Llivichuzhca.docx
+09:49:20      ok  ANEXO 6.2 - Pablo Stiven Davila Cepeda.docx
+09:49:21      ok  ANEXO 6.2 - Jorge Alberto Esparza Castillo.docx
+09:49:22      ok  ANEXO 6.2 - Christopher Josue Llanos Ayala.docx
+09:49:23      ok  ANEXO 6.2 - Paul David Morocho Fajardo.docx
+09:49:23      ok  ANEXO 6.2 - Anahi Del Rosario Ochoa Gonzalez.docx
+09:49:24      ok  ANEXO 6.2 - Christian Santiago Sacaquirin Pereira.docx
+09:49:24  ANEXO 6.2: 12 documento(s)
+09:49:24  ANEXO 7: empieza
+09:49:25      ok  ANEXO 7 - Planificacion Julio 2026.docx
+09:49:26      ok  ANEXO 7 - Planificacion Agosto 2026.docx
+09:49:28      ok  ANEXO 7 - Planificacion Septiembre 2026.docx
+09:49:28  ANEXO 7: 3 documento(s)
+09:49:28  ANEXO 8: empieza
+09:49:28      ok  ANEXO 8 - Nayely De Los Angeles Anguisaca Crespo.docx
+09:49:29      ok  ANEXO 8 - Daniela Estefania Arauz Beltran.docx
+09:49:29      ok  ANEXO 8 - Rafael Benjamin Armijos Merino.docx
+09:49:29      ok  ANEXO 8 - Cristhian Javier Campuzano Cevallos.docx
+09:49:30      ok  ANEXO 8 - Pablo Xavier Carpio Ruiz.docx
+09:49:30      ok  ANEXO 8 - Henry Josue Clavijo Llivichuzhca.docx
+09:49:31      ok  ANEXO 8 - Pablo Stiven Davila Cepeda.docx
+09:49:31      ok  ANEXO 8 - Jorge Alberto Esparza Castillo.docx
+09:49:31      ok  ANEXO 8 - Christopher Josue Llanos Ayala.docx
+09:49:32      ok  ANEXO 8 - Paul David Morocho Fajardo.docx
+09:49:32      ok  ANEXO 8 - Anahi Del Rosario Ochoa Gonzalez.docx
+09:49:33      ok  ANEXO 8 - Christian Santiago Sacaquirin Pereira.docx
+09:49:33  ANEXO 8: 12 documento(s)
+09:49:33  ANEXO 9: empieza
+09:49:33      ok  ANEXO 9 - Julio 2026 - Diego Armando Cale Pillco.docx
+09:49:34      ok  ANEXO 9 - Agosto 2026 - Diego Armando Cale Pillco.docx
+09:49:34      ok  ANEXO 9 - Septiembre 2026 - Diego Armando Cale Pillco.docx
+09:49:34  ANEXO 9: 3 documento(s)
+09:49:34  ANEXO 10: empieza
+09:49:35      ok  ANEXO 10 - Nayely De Los Angeles Anguisaca Crespo.docx
+09:49:36      ok  ANEXO 10 - Daniela Estefania Arauz Beltran.docx
+09:49:37      ok  ANEXO 10 - Rafael Benjamin Armijos Merino.docx
+09:49:38      ok  ANEXO 10 - Cristhian Javier Campuzano Cevallos.docx
+09:49:38      ok  ANEXO 10 - Pablo Xavier Carpio Ruiz.docx
+09:49:39      ok  ANEXO 10 - Henry Josue Clavijo Llivichuzhca.docx
+09:49:40      ok  ANEXO 10 - Pablo Stiven Davila Cepeda.docx
+09:49:41      ok  ANEXO 10 - Jorge Alberto Esparza Castillo.docx
+09:49:42      ok  ANEXO 10 - Christopher Josue Llanos Ayala.docx
+09:49:43      ok  ANEXO 10 - Paul David Morocho Fajardo.docx
+09:49:44      ok  ANEXO 10 - Anahi Del Rosario Ochoa Gonzalez.docx
+09:49:45      ok  ANEXO 10 - Christian Santiago Sacaquirin Pereira.docx
+09:49:45  ANEXO 10: 12 documento(s)
+09:49:45  ANEXO 11: empieza
+09:49:45      ok  ANEXO 11 - Nayely De Los Angeles Anguisaca Crespo.docx
+09:49:46      ok  ANEXO 11 - Daniela Estefania Arauz Beltran.docx
+09:49:46      ok  ANEXO 11 - Rafael Benjamin Armijos Merino.docx
+09:49:47      ok  ANEXO 11 - Cristhian Javier Campuzano Cevallos.docx
+09:49:47      ok  ANEXO 11 - Pablo Xavier Carpio Ruiz.docx
+09:49:47      ok  ANEXO 11 - Henry Josue Clavijo Llivichuzhca.docx
+09:49:48      ok  ANEXO 11 - Pablo Stiven Davila Cepeda.docx
+09:49:48      ok  ANEXO 11 - Jorge Alberto Esparza Castillo.docx
+09:49:48      ok  ANEXO 11 - Christopher Josue Llanos Ayala.docx
+09:49:49      ok  ANEXO 11 - Paul David Morocho Fajardo.docx
+09:49:49      ok  ANEXO 11 - Anahi Del Rosario Ochoa Gonzalez.docx
+09:49:50      ok  ANEXO 11 - Christian Santiago Sacaquirin Pereira.docx
+09:49:50  ANEXO 11: 12 documento(s)
+09:49:50  ANEXO 12: empieza
+09:49:50      ok  ANEXO 12 - Primera Jornada de Capacitacion.docx
+09:49:51      ok  ANEXO 12 - Segunda Jornada de Capacitacion.docx
+09:49:51  ANEXO 12: 2 documento(s)
+09:49:51  ANEXO 13: empieza
+09:49:52      ok  ANEXO 13 - Diego Armando Cale Pillco.docx
+09:49:52  ANEXO 13: 1 documento(s)
+09:49:52  ANEXO S1: empieza
+09:49:53      ok  SN 1 - Proceso de Seleccion.docx
+09:49:53  ANEXO S1: 1 documento(s)
+09:49:53  ANEXO S2: empieza
+09:49:53      ok  SN 2 - Informe de Seguimiento.docx
+09:49:53  ANEXO S2: 1 documento(s)
+09:49:53  ANEXO S3: empieza
+09:49:54      ok  SN 3 - Informe Final.docx
+09:49:54  ANEXO S3: 1 documento(s)
+09:49:54  ANEXO S4: empieza
+09:49:54      ok  SN 4 - Informe de Socializacion.docx
+09:49:54  ANEXO S4: 1 documento(s)
+09:49:54  ANEXO S5: empieza
+09:49:54      ok  SN 5 - Constancia de Anexos.docx
+09:49:54  ANEXO S5: 1 documento(s)
+09:49:54  FIN · 113 archivos, 1 avisos

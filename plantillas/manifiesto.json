@@ -146,7 +146,7 @@
         "ancho_cm": 4.39,
         "alto_cm": 1.34,
         "media": "word/media/image1.png",
-        "en_cuerpo": true
+        "en_cuerpo": false
       },
       {
         "indice": 1,
@@ -154,7 +154,7 @@
         "ancho_cm": 3.19,
         "alto_cm": 1.93,
         "media": "word/media/image2.jpg",
-        "en_cuerpo": true
+        "en_cuerpo": false
       }
     ],
     "reglas_aplicadas": {
@@ -391,6 +391,14 @@
         "ancho_cm": 5.54,
         "alto_cm": 1.2,
         "media": "word/media/image2.jpg",
+        "en_cuerpo": false
+      },
+      {
+        "indice": 1,
+        "logico": "institucional",
+        "ancho_cm": 4.39,
+        "alto_cm": 1.34,
+        "media": "word/media/image1.png",
         "en_cuerpo": false
       }
     ],

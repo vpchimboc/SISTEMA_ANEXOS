@@ -13,7 +13,7 @@ from __future__ import annotations
 import sqlite3
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, Sequence
 
 RAIZ = Path(__file__).resolve().parent.parent
 RUTA_DB = RAIZ / "datos" / "anexos.db"
@@ -373,11 +373,71 @@ def _fila_a_dict(cursor: sqlite3.Cursor, fila: tuple) -> dict:
     return {col[0]: fila[i] for i, col in enumerate(cursor.description)}
 
 
+DIR_COPIAS = RAIZ / "datos" / "copias"
+COPIAS_A_CONSERVAR = 40
+
+
+def respaldar(ruta: Path | str | None = None, motivo: str = "") -> Path | None:
+    """
+    Copia la base antes de escribir, con la hora en el nombre.
+
+    Existe porque un guardado equivocado —o un archivo traído de fuera— puede
+    borrar horas de trabajo, y con SQLite no hay papelera. Se conservan las
+    últimas COPIAS_A_CONSERVAR y se descartan las más viejas; cada una pesa lo
+    que la base, que son unos cientos de kilobytes.
+
+    Nunca interrumpe la operación: si la copia falla, se sigue. Perder el
+    respaldo es malo, pero impedir que el usuario guarde es peor.
+    """
+    from datetime import datetime
+    import shutil
+
+    origen = Path(ruta) if ruta else RUTA_DB
+    if not origen.exists() or origen.stat().st_size == 0:
+        return None
+    try:
+        DIR_COPIAS.mkdir(parents=True, exist_ok=True)
+        previas = sorted(DIR_COPIAS.glob("anexos-*.db"))
+
+        # Si la base no ha cambiado desde la última copia, no se hace otra.
+        # Sin esto, abrir la app para MIRAR algo ya generaba una copia, y en
+        # cuarenta visitas las copias buenas quedaban fuera del anillo: justo
+        # cuando hicieran falta ya no estarían. copy2 conserva la fecha, así
+        # que basta comparar tamaño y fecha de modificación.
+        if previas and motivo == "":
+            ultima = previas[-1].stat()
+            actual = origen.stat()
+            if (ultima.st_size, int(ultima.st_mtime)) == (actual.st_size,
+                                                          int(actual.st_mtime)):
+                return previas[-1]
+
+        sello = datetime.now().strftime("%Y%m%d-%H%M%S")
+        sufijo = f"-{motivo}" if motivo else ""
+        destino = DIR_COPIAS / f"anexos-{sello}{sufijo}.db"
+        if destino.exists():          # dos escrituras en el mismo segundo
+            return destino
+        shutil.copy2(origen, destino)
+        viejas = sorted(DIR_COPIAS.glob("anexos-*.db"))
+        for sobra in viejas[:-COPIAS_A_CONSERVAR]:
+            sobra.unlink(missing_ok=True)
+        return destino
+    except OSError:
+        return None
+
+
 @contextmanager
-def conexion(ruta: Path | str | None = None):
-    """Abre una conexión con filas tipo dict y foreign keys activas."""
+def conexion(ruta: Path | str | None = None, respaldo: bool = True):
+    """
+    Abre una conexión con filas tipo dict y foreign keys activas.
+
+    `respaldo` deja una copia de la base ANTES de tocarla. Se hace aquí y no en
+    cada pantalla para que ningún camino de guardado se quede sin red: basta
+    con abrir la conexión.
+    """
     ruta = Path(ruta) if ruta else RUTA_DB
     ruta.parent.mkdir(parents=True, exist_ok=True)
+    if respaldo:
+        respaldar(ruta)
     con = sqlite3.connect(ruta)
     con.row_factory = _fila_a_dict
     con.execute("PRAGMA foreign_keys = ON")
@@ -471,3 +531,68 @@ def reemplazar_tabla(con: sqlite3.Connection, tabla: str, filas: list[dict],
         fila = dict(fila)
         fila.setdefault("orden", i)
         insertar(con, tabla, fila)
+
+
+def sincronizar_tabla(con: sqlite3.Connection, tabla: str, filas: list[dict],
+                      clave: str | Sequence[str], donde: str = "",
+                      parametros: Iterable[Any] = ()) -> dict[str, int]:
+    """
+    Deja la tabla igual a `filas` SIN borrarla entera: actualiza lo que existe,
+    inserta lo nuevo y borra solo lo que desapareció.
+
+    Es lo que hay que usar en las tablas de las que cuelgan otras. `reemplazar_tabla`
+    hace DELETE de todo, y como las claves foráneas están en ON DELETE CASCADE,
+    guardar la lista de estudiantes se llevaba por delante el seguimiento y las
+    dos tablas de evaluación, además de renumerar los identificadores.
+
+    `clave` es la columna —o la combinación de columnas— que identifica la fila
+    de forma estable: la cédula en estudiantes, la etiqueta en meses, y en
+    personas el par (rol, nombre), porque el director del proyecto y el docente
+    de apoyo pueden ser la misma persona y con solo el nombre se pisarían.
+    Devuelve el recuento de cada operación.
+    """
+    columnas_clave = [clave] if isinstance(clave, str) else list(clave)
+
+    def identidad(fila: dict) -> str:
+        return "\x1f".join(str(fila.get(c) or "").strip() for c in columnas_clave)
+    # No todas las tablas tienen las mismas columnas (algunas no llevan
+    # `orden`), así que se descarta lo que la tabla no conoce en vez de fallar.
+    reales = {r["name"] for r in con.execute(f"PRAGMA table_info({tabla})")}
+
+    sql = f"SELECT * FROM {tabla}"
+    if donde:
+        sql += f" WHERE {donde}"
+    existentes = {identidad(dict(r)): dict(r)
+                  for r in con.execute(sql, tuple(parametros))}
+
+    vistos: set[str] = set()
+    cuenta = {"actualizadas": 0, "insertadas": 0, "borradas": 0}
+
+    for i, fila in enumerate(filas):
+        fila = {k: v for k, v in fila.items() if k in reales and k != "id"}
+        if "orden" in reales:
+            fila.setdefault("orden", i)
+        valor = identidad(fila)
+        if not valor.strip("\x1f"):
+            continue
+        vistos.add(valor)
+        actual = existentes.get(valor)
+        if actual is None:
+            insertar(con, tabla, fila)
+            cuenta["insertadas"] += 1
+            continue
+        columnas = [c for c in fila if c != "id"]
+        # Solo se escribe si algo cambió, para no tocar filas sin motivo.
+        if all(str(actual.get(c)) == str(fila[c]) for c in columnas):
+            continue
+        asignaciones = ", ".join(f"{c} = ?" for c in columnas)
+        con.execute(f"UPDATE {tabla} SET {asignaciones} WHERE id = ?",
+                    tuple(fila[c] for c in columnas) + (actual["id"],))
+        cuenta["actualizadas"] += 1
+
+    for valor, actual in existentes.items():
+        if valor not in vistos:
+            con.execute(f"DELETE FROM {tabla} WHERE id = ?", (actual["id"],))
+            cuenta["borradas"] += 1
+
+    return cuenta

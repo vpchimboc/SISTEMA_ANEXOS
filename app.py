@@ -14,6 +14,7 @@ from __future__ import annotations
 import io
 import re
 import shutil
+import sqlite3
 import zipfile
 from pathlib import Path
 
@@ -78,6 +79,28 @@ def guardar_tabla(tabla: str, df: pd.DataFrame, columnas: list[str],
                                          for f in filas], donde, parametros)
 
 
+def guardar_tabla_ligada(tabla: str, df: pd.DataFrame, columnas: list[str],
+                         clave) -> dict[str, int]:
+    """
+    Como `guardar_tabla`, pero para las tablas de las que cuelgan otras.
+
+    Personas, estudiantes, actividades y meses tienen tablas hijas con
+    ON DELETE CASCADE. Guardarlas con DELETE + INSERT vaciaba el seguimiento y
+    las evaluaciones en cada guardado, y además renumeraba los identificadores.
+    Aquí se sincroniza por `clave`, así que las filas que siguen existiendo
+    conservan su id y sus hijas.
+    """
+    filas = []
+    for i, (_, fila) in enumerate(df.iterrows()):
+        datos = {c: (fila[c] if c in fila and pd.notna(fila[c]) else "") for c in columnas}
+        if not any(str(v).strip() for v in datos.values()):
+            continue
+        datos.setdefault("orden", i)
+        filas.append(datos)
+    with db.conexion() as con:
+        return db.sincronizar_tabla(con, tabla, filas, clave)
+
+
 def editor(df: pd.DataFrame, columnas: list[str], clave: str,
            config: dict | None = None) -> pd.DataFrame:
     """data_editor con las columnas esperadas aunque la tabla venga vacía."""
@@ -92,6 +115,28 @@ def editor(df: pd.DataFrame, columnas: list[str], clave: str,
 
 def aviso_guardado():
     st.toast("Guardado", icon="✅")
+
+
+def entero(valor) -> int | None:
+    """
+    Entero de una celda del data_editor, o None si no lo hay.
+
+    Hace falta porque una columna de identificadores con celdas vacías la
+    convierte pandas a float64: el 40 llega como 40.0 y `str(40.0).isdigit()`
+    es False. Con esa comprobación el docente de apoyo se guardaba siempre
+    como None y no había forma de asignarlo.
+    """
+    if valor is None:
+        return None
+    try:
+        if pd.isna(valor):
+            return None
+    except (TypeError, ValueError):
+        pass
+    try:
+        return int(float(str(valor).strip()))
+    except (TypeError, ValueError):
+        return None
 
 
 _arrancar()
@@ -195,6 +240,128 @@ def pagina_proyecto():
                                 (clave, valor.strip()))
             aviso_guardado()
 
+    _fechas_anexos_7_13()
+
+
+def _dia_no_laborable(texto: str) -> str:
+    """Devuelve el motivo si la fecha no es día hábil; cadena vacía si lo es."""
+    from herramientas import verificar_fechas as vf
+    f = vf._fecha(texto)
+    if f is None:
+        return "fecha ilegible" if str(texto).strip() else ""
+    ok, motivo = vf.laborable(f)
+    return "" if ok else motivo
+
+
+def _fechas_anexos_7_13():
+    """
+    Fechas de los anexos 7 a 13.
+
+    Estos anexos no llevan una fecha suelta como los oficios: la fecha que
+    imprimen sale de la fila que representan (el mes, la jornada, la visita).
+    Por eso aquí se editan esas filas y no una copia: inventar un campo
+    aparte dejaría dos fechas distintas para el mismo documento.
+
+    El Anexo 8 no tiene fecha propia en el formato oficial —las fechas son las
+    del registro diario— y por eso solo se resume.
+    """
+    st.divider()
+    st.subheader("Fechas de los anexos 7 a 13")
+    st.caption("Cada uno imprime la fecha de la fila que representa: el mes, "
+               "la jornada o la visita. Formato AAAA-MM-DD. Se avisa si alguna "
+               "cae en fin de semana o feriado.")
+
+    with db.conexion() as con:
+        meses = db.listar(con, "meses", orden="nro, id")
+        jornadas = db.listar(con, "jornadas", orden="nro, id")
+        visitas = db.listar(con, "visitas", orden="orden, id")
+        proyecto = dict(db.obtener_proyecto(con))
+        registro = con.execute(
+            "SELECT MIN(fecha) AS a, MAX(fecha) AS b, COUNT(*) AS n "
+            "FROM registro_diario").fetchone()
+
+    problemas: list[str] = []
+
+    def campo(columna, etiqueta, valor, clave):
+        texto = columna.text_input(etiqueta, valor or "", key=clave)
+        motivo = _dia_no_laborable(texto)
+        if motivo:
+            columna.caption(f":red[{motivo}]")
+            problemas.append(f"{etiqueta}: {texto} ({motivo})")
+        return texto.strip()
+
+    with st.form("form_fechas_7_13"):
+        st.markdown("**Anexos 7 y 9 · una fila por mes**")
+        st.caption("El Anexo 7 imprime «Fecha Planificación» y la fecha de la "
+                   "hoja de socialización; el Anexo 9, «Fecha de Seguimiento».")
+        nuevos_meses = {}
+        for mes in meses:
+            st.markdown(f"*{mes['etiqueta']}*")
+            c1, c2, c3 = st.columns(3)
+            nuevos_meses[mes["id"]] = {
+                "fecha_planificacion": campo(
+                    c1, "A7 · planificación", mes["fecha_planificacion"],
+                    f"fm_p_{mes['id']}"),
+                "fecha_socializacion": campo(
+                    c2, "A7 · socialización", mes["fecha_socializacion"],
+                    f"fm_s_{mes['id']}"),
+                "fecha_seguimiento": campo(
+                    c3, "A9 · seguimiento", mes["fecha_seguimiento"],
+                    f"fm_g_{mes['id']}"),
+            }
+
+        st.markdown("**Anexo 11 · fecha de evaluación**")
+        c1, _ = st.columns(2)
+        f_eval = campo(c1, "Fecha de evaluación al estudiante",
+                       proyecto.get("fecha_evaluacion"), "f_eval_11")
+
+        st.markdown("**Anexo 12 · una fila por jornada de capacitación**")
+        nuevas_jornadas = {}
+        columnas = st.columns(max(len(jornadas), 1))
+        for i, j in enumerate(jornadas):
+            nuevas_jornadas[j["id"]] = campo(
+                columnas[i], (j["asunto"] or f"Jornada {j['nro']}")[:40],
+                j["fecha"], f"fj_{j['id']}")
+
+        st.markdown("**Anexo 13 · una fila por visita**")
+        nuevas_visitas = {}
+        columnas = st.columns(3)
+        for i, v in enumerate(visitas):
+            nuevas_visitas[v["id"]] = campo(
+                columnas[i % 3], f"Visita {i + 1}", v["fecha"], f"fv_{v['id']}")
+
+        st.markdown("**Anexo 8 · registro diario**")
+        st.caption(
+            f"No lleva fecha propia en el formato oficial: imprime las "
+            f"{registro['n']} fechas del registro, de {registro['a']} a "
+            f"{registro['b']}. Se editan en la sección «Registro diario»."
+        )
+
+        if st.form_submit_button("Guardar fechas de los anexos 7 a 13",
+                                 type="primary"):
+            with db.conexion() as con:
+                for id_mes, campos in nuevos_meses.items():
+                    con.execute(
+                        "UPDATE meses SET fecha_planificacion = ?, "
+                        "fecha_socializacion = ?, fecha_seguimiento = ? WHERE id = ?",
+                        (campos["fecha_planificacion"], campos["fecha_socializacion"],
+                         campos["fecha_seguimiento"], id_mes))
+                for id_j, valor in nuevas_jornadas.items():
+                    con.execute("UPDATE jornadas SET fecha = ? WHERE id = ?",
+                                (valor, id_j))
+                for id_v, valor in nuevas_visitas.items():
+                    con.execute("UPDATE visitas SET fecha = ? WHERE id = ?",
+                                (valor, id_v))
+                db.guardar_proyecto(con, {"fecha_evaluacion": f_eval})
+            aviso_guardado()
+            st.rerun()
+
+    if problemas:
+        st.warning("Fechas en día no laborable:\n\n"
+                   + "\n".join(f"- {p}" for p in problemas)
+                   + "\n\nSe guardan igual, pero la institución las revisa "
+                     "contra el calendario.")
+
 
 # --------------------------------------------------------------------------
 # Página: Personas
@@ -239,7 +406,7 @@ def pagina_personas():
         },
     )
     if st.button("Guardar personas", type="primary"):
-        guardar_tabla("personas", editado, COLS_PERSONA)
+        guardar_tabla_ligada("personas", editado, COLS_PERSONA, ("rol", "nombre"))
         aviso_guardado()
         st.rerun()
 
@@ -267,6 +434,16 @@ def pagina_estudiantes():
 
     with tab_lista:
         df = leer("estudiantes")
+        # Entero anulable: si se deja como float, el desplegable recibe 40.0
+        # y no lo reconoce entre sus opciones, así que la celda sale vacía.
+        if "docente_apoyo_id" in df.columns:
+            df["docente_apoyo_id"] = pd.to_numeric(
+                df["docente_apoyo_id"], errors="coerce").astype("Int64")
+
+        if not opciones:
+            st.warning("No hay docentes de apoyo registrados. Añádalos en "
+                       "«Personas» para poder asignarlos aquí.")
+
         editado = editor(df, COLS_EST, "ed_estudiantes", config={
             "cedula": st.column_config.TextColumn("Cédula", width="small"),
             "codigo": st.column_config.TextColumn("Código", width="small",
@@ -286,16 +463,21 @@ def pagina_estudiantes():
                 datos = {c: (fila[c] if pd.notna(fila.get(c)) else "") for c in COLS_EST}
                 datos["nombre_completo"] = f"{datos['nombres']} {datos['apellidos']}".strip()
                 datos["activo"] = 1 if datos["activo"] in (True, 1, "1", "True") else 0
-                datos["docente_apoyo_id"] = (int(datos["docente_apoyo_id"])
-                                             if str(datos["docente_apoyo_id"]).strip().isdigit()
-                                             else None)
+                datos["docente_apoyo_id"] = entero(fila.get("docente_apoyo_id"))
                 filas.append(datos)
+            # Se sincroniza por cédula en vez de borrar y reinsertar: la tabla
+            # de estudiantes tiene tres tablas colgando con ON DELETE CASCADE
+            # (seguimiento y las dos de evaluación), y un DELETE completo las
+            # vaciaba en cada guardado sin decir nada.
+            for i, f in enumerate(filas):
+                f["orden"] = i
             with db.conexion() as con:
-                con.execute("DELETE FROM estudiantes")
-                for i, f in enumerate(filas):
-                    f["orden"] = i
-                    db.insertar(con, "estudiantes", f)
+                cuenta = db.sincronizar_tabla(con, "estudiantes", filas, "cedula")
             aviso_guardado()
+            if cuenta["borradas"]:
+                st.warning(
+                    f"Se quitaron {cuenta['borradas']} estudiante(s). Su "
+                    "seguimiento y sus evaluaciones se borran con ellos.")
             st.rerun()
 
     with tab_carga:
@@ -407,7 +589,7 @@ def pagina_plan():
         st.info(f"Total de horas de las actividades: **{int(total)}**")
 
     if st.button("Guardar plan", type="primary"):
-        guardar_tabla("actividades", editado, COLS_ACT)
+        guardar_tabla_ligada("actividades", editado, COLS_ACT, "nro")
         aviso_guardado()
         st.rerun()
 
@@ -494,7 +676,7 @@ def pagina_meses():
         "fecha_socializacion": st.column_config.TextColumn("Fecha socialización"),
     })
     if st.button("Guardar meses", type="primary"):
-        guardar_tabla("meses", meses, COLS_MES)
+        guardar_tabla_ligada("meses", meses, COLS_MES, "etiqueta")
         aviso_guardado()
         st.rerun()
 
@@ -1112,6 +1294,73 @@ def _revision_previa():
                "para volver a derivar el seguimiento y las evaluaciones.")
 
 
+def pagina_copias():
+    st.header("Copias de seguridad")
+    st.caption("El sistema guarda una copia de la base ANTES de cada escritura. "
+               "Si algo se perdió, aquí se recupera el estado anterior.")
+
+    copias = sorted(db.DIR_COPIAS.glob("anexos-*.db"), reverse=True) \
+        if db.DIR_COPIAS.exists() else []
+    if not copias:
+        st.info("Todavía no hay copias. Se crea una en cuanto guarde algo.")
+        return
+
+    TABLAS = ["proyecto", "personas", "estudiantes", "actividades", "meses",
+              "registro_diario", "planificacion", "seguimiento",
+              "evaluacion_plan", "evaluacion_estudiante", "visitas", "jornadas",
+              "narrativa", "listas"]
+
+    def resumen(ruta: Path) -> dict:
+        con = sqlite3.connect(ruta)
+        salida = {}
+        for t in TABLAS:
+            try:
+                salida[t] = con.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0]
+            except sqlite3.Error:
+                salida[t] = None
+        con.close()
+        return salida
+
+    actual = resumen(db.RUTA_DB)
+    st.subheader("Base actual")
+    st.write(" · ".join(f"{t} **{n}**" for t, n in actual.items() if n))
+
+    st.subheader(f"Copias disponibles ({len(copias)})")
+    st.caption("Se conservan las 40 más recientes.")
+
+    nombres = {c.name: c for c in copias}
+    elegida = st.selectbox("Copia", list(nombres),
+                           format_func=lambda n: n.replace("anexos-", "")
+                                                  .replace(".db", ""))
+    ruta = nombres[elegida]
+    datos = resumen(ruta)
+
+    # Comparativa: es lo único que permite decidir cuál copia sirve.
+    filas = [{"Tabla": t, "En la copia": datos[t], "Ahora": actual[t],
+              "Diferencia": (datos[t] or 0) - (actual[t] or 0)}
+             for t in TABLAS if datos[t] is not None or actual[t] is not None]
+    st.dataframe(pd.DataFrame(filas), hide_index=True, **ANCHO)
+
+    perdidas = [f["Tabla"] for f in filas if f["Diferencia"] > 0]
+    if perdidas:
+        st.warning("Esta copia tiene MÁS filas que la base actual en: "
+                   + ", ".join(perdidas)
+                   + ". Es señal de que algo se borró después.")
+
+    st.divider()
+    st.write("Restaurar deja la base tal y como estaba en esa copia. "
+             "Antes de hacerlo se guarda otra copia del estado actual, "
+             "así que la operación se puede deshacer.")
+    confirmar = st.text_input(
+        "Para confirmar, escriba **RESTAURAR**", key="conf_restaurar")
+    if st.button("Restaurar esta copia", type="primary",
+                 disabled=confirmar.strip().upper() != "RESTAURAR"):
+        db.respaldar(motivo="antes-de-restaurar")
+        shutil.copy2(ruta, db.RUTA_DB)
+        st.success(f"Restaurada la copia {elegida}.")
+        st.rerun()
+
+
 def pagina_generar():
     st.header("Generar documentos")
 
@@ -1322,6 +1571,7 @@ PAGINAS = {
     "Informes (S/N)": pagina_informes,
     "Logos": pagina_logos,
     "Generar anexos": pagina_generar,
+    "Copias de seguridad": pagina_copias,
 }
 
 with st.sidebar:

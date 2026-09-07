@@ -88,6 +88,17 @@ def actividad_de(descripcion: str) -> int | None:
     return None
 
 
+def _habil_previo(fecha):
+    """Último día laborable estrictamente anterior a `fecha`."""
+    from herramientas.verificar_fechas import laborable
+    anterior = fecha - timedelta(days=1)
+    for _ in range(15):  # margen de sobra para un puente largo
+        if laborable(anterior)[0]:
+            return anterior
+        anterior -= timedelta(days=1)
+    return fecha - timedelta(days=1)
+
+
 def etiqueta_mes(fecha) -> str:
     return f"{MESES_ES[fecha.month - 1].capitalize()} {fecha.year}"
 
@@ -145,9 +156,13 @@ def cargar(sin_evaluaciones: bool = False) -> None:
             hasta = max(d["hasta"] for d in grupo.values())
             ids_mes[clave] = db.insertar(con, "meses", {
                 "nro": i, "etiqueta": etiqueta_mes(desde),
-                "fecha_planificacion": (desde - timedelta(days=1)).isoformat(),
+                # La planificación se firma el día hábil ANTERIOR al primer día
+                # de trabajo del mes. Restar un día a secas dejaba domingos
+                # (19/07 y 02/08), y un documento fechado en domingo salta a la
+                # vista de quien lo revisa.
+                "fecha_planificacion": _habil_previo(desde).isoformat(),
                 "fecha_seguimiento": hasta.isoformat(),
-                "fecha_socializacion": (desde - timedelta(days=1)).isoformat()})
+                "fecha_socializacion": _habil_previo(desde).isoformat()})
 
         # --- Anexo 7: planificación mensual --------------------------------
         con.execute("DELETE FROM planificacion")
