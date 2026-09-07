@@ -10,12 +10,15 @@ cual estaban en el documento oficial.
 from __future__ import annotations
 
 import json
+import os
 import re
 import shutil
 import subprocess
 import sys
+import traceback
 import unicodedata
 from dataclasses import dataclass, field
+from datetime import datetime
 from pathlib import Path
 
 from docxtpl import DocxTemplate
@@ -118,6 +121,20 @@ def anexos_disponibles() -> list[Anexo]:
     return [a for a in CATALOGO.values() if (DIR_PLANTILLAS / a.plantilla).exists()]
 
 
+def prefijo(clave: str) -> str:
+    """
+    Comienzo del nombre de archivo de un anexo ("ANEXO 6.1 - ", "SN 3 - ").
+
+    Sirve para comprobar si un anexo llegó a producir archivos sin depender de
+    la lista que devuelve `generar`, que se pierde si el proceso se corta.
+    """
+    anexo = CATALOGO.get(clave)
+    if anexo is None:
+        return clave
+    return anexo.patron.split("{", 1)[0].format() if "{" in anexo.patron \
+        else anexo.patron
+
+
 # --------------------------------------------------------------------------
 # Manifiesto de plantillas (slots de logo por anexo)
 # --------------------------------------------------------------------------
@@ -180,10 +197,14 @@ def _renderizar(anexo: Anexo, ctx: dict, destino: Path,
 
 def generar(claves: list[str], carpeta_salida: Path | str | None = None,
             ruta_db: Path | str | None = None,
-            a_pdf: bool = False) -> dict:
+            a_pdf: bool = False, saltar_existentes: bool = False) -> dict:
     """
     Genera los anexos indicados. Devuelve
     {"archivos": [Path, ...], "errores": [str, ...]}.
+
+    Con `saltar_existentes` no se rehace lo que ya está en la carpeta. Sirve
+    para retomar una tanda que se cortó a mitad sin repetir lo ya hecho, que
+    con 121 documentos son varios minutos.
     """
     carpeta = Path(carpeta_salida) if carpeta_salida else DIR_SALIDA
     manifiesto = cargar_manifiesto()
@@ -206,31 +227,72 @@ def generar(claves: list[str], carpeta_salida: Path | str | None = None,
         for fila in base.get("constancia", [])
     ]
 
+    # Bitácora en disco. Se escribe y se vacía el buffer documento a documento:
+    # si el proceso muere a mitad (falta de memoria, Streamlit recargando los
+    # módulos, disco lleno) el archivo dice exactamente en cuál se quedó, cosa
+    # que la pantalla no puede contar porque se va con el proceso.
+    bitacora = carpeta / "_registro_generacion.txt"
+    def anotar(linea: str) -> None:
+        try:
+            with open(bitacora, "a", encoding="utf-8") as f:
+                f.write(f"{datetime.now():%H:%M:%S}  {linea}\n")
+                f.flush()
+                os.fsync(f.fileno())
+        except OSError:
+            pass  # la bitácora nunca debe tumbar la generación
+
+    anotar(f"INICIO · {len(claves)} anexos seleccionados: {', '.join(claves)}")
+
     for clave in claves:
         anexo = CATALOGO.get(clave)
         if anexo is None:
             errores.append(f"Anexo {clave}: no está en el catálogo")
+            anotar(f"ANEXO {clave}: no está en el catálogo")
             continue
         slots = _slots_de(anexo, manifiesto)
 
+        anotar(f"ANEXO {clave}: empieza")
+        hechos = 0
         try:
             for ctx, etiqueta in _iteraciones(anexo, base):
                 nombre = anexo.patron.format(**etiqueta)
                 destino = carpeta / f"{nombre_seguro(nombre)}.docx"
+                if saltar_existentes and destino.exists():
+                    generados.append(destino)
+                    hechos += 1
+                    continue
                 generados.append(_renderizar(anexo, ctx, destino, slots,
                                              catalogo_logos, avisos))
+                hechos += 1
+                anotar(f"    ok  {destino.name}")
+            if hechos == 0:
+                # Ningún documento y ninguna excepción: la iteración se quedó
+                # sin datos (por ejemplo el Anexo 9 sin seguimiento del mes).
+                errores.append(f"Anexo {clave}: no se generó ningún documento; "
+                               "revise que haya datos para este anexo")
+                anotar(f"ANEXO {clave}: 0 documentos (sin datos)")
+            else:
+                anotar(f"ANEXO {clave}: {hechos} documento(s)")
         except Exception as e:  # se reporta y se sigue con los demás anexos
             errores.append(f"Anexo {clave}: {e}")
+            anotar(f"ANEXO {clave}: ERROR {e.__class__.__name__}: {e}")
+            anotar(traceback.format_exc())
 
     if a_pdf and generados:
+        anotar(f"PDF: convirtiendo {len(generados)} documentos")
         convertidos, fallos = a_pdf_lote(generados)
         generados.extend(convertidos)
         errores.extend(fallos)
+        anotar(f"PDF: {len(convertidos)} convertidos, {len(fallos)} fallos")
 
     # Los avisos de logos no son fallos: el documento sale bien, solo conserva
     # el logo original. Se reportan sin repetir el mismo mensaje.
     for aviso in dict.fromkeys(avisos):
         errores.append(aviso)
+
+    # Si esta línea no aparece en la bitácora, el proceso se cortó a mitad y no
+    # es un fallo del anexo: es el intérprete que se fue.
+    anotar(f"FIN · {len(generados)} archivos, {len(errores)} avisos")
 
     return {"archivos": generados, "errores": errores}
 
@@ -268,6 +330,12 @@ def _enriquecer(anexo: Anexo, ctx: dict, base: dict) -> None:
 
     if anexo.clave == "9":
         ctx["seguimiento"] = mod_ctx.seguimiento_de(base, mes, docente)
+
+    if anexo.clave == "10":
+        # El informe del estudiante cierra con conclusiones y recomendaciones
+        # editables; en el documento original iban escritas a mano.
+        ctx["conclusiones"] = mod_ctx.lista_de(base, "a10_conclusiones")
+        ctx["recomendaciones"] = mod_ctx.lista_de(base, "a10_recomendaciones")
 
     # --- Informes narrativos ------------------------------------------------
     if anexo.clave in {"S2", "S3"}:

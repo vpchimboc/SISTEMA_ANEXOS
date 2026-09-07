@@ -99,7 +99,8 @@ def _persona(fila: dict | None) -> dict:
     return fila
 
 
-def _estudiante(fila: dict, docentes: dict[int, dict]) -> dict:
+def _estudiante(fila: dict, docentes: dict[int, dict],
+                docente_defecto: dict | None = None) -> dict:
     fila = dict(fila)
     nombres = (fila.get("nombres") or "").strip()
     apellidos = (fila.get("apellidos") or "").strip()
@@ -107,7 +108,10 @@ def _estudiante(fila: dict, docentes: dict[int, dict]) -> dict:
     fila["nombre_completo"] = completo or f"{nombres} {apellidos}".strip()
     fila["nombre_apellido"] = f"{apellidos} {nombres}".strip() or fila["nombre_completo"]
     fila["tratamiento"] = "Señorita" if (fila.get("sexo") or "M").upper() == "F" else "Señor"
-    fila["docente_apoyo"] = _persona(docentes.get(fila.get("docente_apoyo_id")))
+    asignado = docentes.get(fila.get("docente_apoyo_id"))
+    # Si no se asignó docente y el proyecto tiene uno solo, todos son suyos.
+    # Sin esto el Anexo 9 (que se emite por docente) sale vacío y se omite.
+    fila["docente_apoyo"] = _persona(asignado or docente_defecto)
     return fila
 
 
@@ -130,7 +134,8 @@ def construir(con: sqlite3.Connection) -> dict:
 
     docentes_apoyo = por_rol.get("docente_apoyo", [])
 
-    estudiantes = [_estudiante(e, por_id)
+    docente_defecto = docentes_apoyo[0] if len(docentes_apoyo) == 1 else None
+    estudiantes = [_estudiante(e, por_id, docente_defecto)
                    for e in db.listar(con, "estudiantes", donde="activo = 1")]
 
     actividades = db.listar(con, "actividades", orden="nro, id")

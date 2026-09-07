@@ -1,0 +1,5 @@
+23:49:00  INICIO · 1 anexos seleccionados: S4
+23:49:00  ANEXO S4: empieza
+23:49:00      ok  SN 4 - Informe de Socializacion.docx
+23:49:00  ANEXO S4: 1 documento(s)
+23:49:00  FIN · 1 archivos, 0 avisos

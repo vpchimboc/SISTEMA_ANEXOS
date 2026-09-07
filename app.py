@@ -12,6 +12,7 @@ que el formato es el mismo que aprueba la Coordinación.
 from __future__ import annotations
 
 import io
+import re
 import shutil
 import zipfile
 from pathlib import Path
@@ -39,6 +40,8 @@ def _ancho_completo() -> dict:
 
 
 ANCHO = _ancho_completo()
+# Los botones aceptan el mismo argumento de ancho que las tablas.
+ANCHO_BOTON = ANCHO
 
 
 # --------------------------------------------------------------------------
@@ -785,6 +788,8 @@ LISTAS_INFORME = {
     "recomendaciones": "Recomendaciones · informe final",
     "resultados_indicadores": "Resultados de los indicadores de impacto",
     "productos": "Resultados alcanzados / productos obtenidos",
+    "a10_conclusiones": "Conclusiones · Anexo 10 (informe del estudiante)",
+    "a10_recomendaciones": "Recomendaciones · Anexo 10 (informe del estudiante)",
 }
 
 GRUPOS_CASILLAS = {
@@ -1075,172 +1080,230 @@ def pagina_logos():
 # Página: Generar
 # --------------------------------------------------------------------------
 
+def _revision_previa():
+    """
+    Avisa de tablas vacías antes de generar.
+
+    Hace falta porque un documento con su tabla vacía sale igual y sin error:
+    el problema solo se ve abriendo el Word. Pasa sobre todo tras volver a
+    correr un script de carga, que rehace meses, estudiantes y actividades con
+    identificadores nuevos y deja sin dueño a las tablas derivadas.
+    """
+    REVISION = [
+        ("seguimiento", "Anexo 9", "Meses y seguimiento"),
+        ("evaluacion_plan", "Anexos 6.1 y 6.2", "Evaluaciones"),
+        ("evaluacion_estudiante", "Anexo 11", "Evaluaciones"),
+        ("planificacion", "Anexo 7", "Meses y seguimiento"),
+        ("registro_diario", "Anexo 8", "Registro diario"),
+        ("actividades", "Anexos 6, 7 y 10", "Plan de aprendizaje"),
+        ("estudiantes", "casi todos los anexos", "Estudiantes"),
+    ]
+    with db.conexion() as con:
+        vacias = [(t, a, s) for t, a, s in REVISION
+                  if not con.execute(f"SELECT 1 FROM {t} LIMIT 1").fetchone()]
+    if not vacias:
+        return
+    st.error("Hay tablas sin datos. Los documentos saldrán con esas secciones "
+             "en blanco:\n\n"
+             + "\n".join(f"- **{t}** (vacía) → afecta a {a}; se llena en «{s}»"
+                         for t, a, s in vacias)
+             + "\n\nSi acaba de volver a cargar el proyecto con un script, "
+               "ejecute después `python herramientas/cargar_actividades.py` "
+               "para volver a derivar el seguimiento y las evaluaciones.")
+
+
 def pagina_generar():
-    st.header("Generar anexos")
+    st.header("Generar documentos")
 
     disponibles = generador.anexos_disponibles()
     if not disponibles:
-        st.error(
-            "No hay plantillas. Ejecuta "
-            "`herramientas/construir_plantillas.py` primero."
-        )
+        st.error("No hay plantillas. Ejecuta `herramientas/construir_plantillas.py` primero.")
         return
 
-    st.caption(
-        "Marca los anexos y pulsa Generar. Los que se emiten por estudiante, "
-        "por mes o por jornada producen un archivo por cada uno."
-    )
+    # Un anexo sin plantilla no aparecía y ya está: no salía casilla ni aviso,
+    # y desde fuera parecía que el sistema no lo contemplaba. Ahora se nombra.
+    sin_plantilla = [a for a in generador.CATALOGO.values()
+                     if not (generador.DIR_PLANTILLAS / a.plantilla).exists()]
+    if sin_plantilla:
+        st.error(
+            f"Faltan {len(sin_plantilla)} plantillas en `{generador.DIR_PLANTILLAS}`. "
+            "Esos documentos no se pueden generar y por eso no aparecen abajo:\n\n"
+            + "\n".join(f"- **{a.titulo}** → falta `{a.plantilla}`"
+                        for a in sin_plantilla)
+            + "\n\nSe recrean con "
+              "`python herramientas/construir_plantillas.py --origen <carpeta ANEXOS>`.")
 
-    # ------------------------------------------------------------------
-    # Inicializar estados de los checkboxes antes de crearlos
-    # ------------------------------------------------------------------
-    for anexo in disponibles:
-        clave = f"chk_{anexo.clave}"
-        if clave not in st.session_state:
-            st.session_state[clave] = False
+    _revision_previa()
 
-    # ------------------------------------------------------------------
-    # Funciones para seleccionar / limpiar
-    # ------------------------------------------------------------------
-    def seleccionar_todos():
-        for anexo in disponibles:
-            st.session_state[f"chk_{anexo.clave}"] = True
+    numerados = [a for a in disponibles if not a.clave.startswith("S")]
+    informes = [a for a in disponibles if a.clave.startswith("S")]
 
-    def limpiar_todos():
-        for anexo in disponibles:
-            st.session_state[f"chk_{anexo.clave}"] = False
+    # Streamlit no permite escribir en session_state la clave de un widget que
+    # ya se instanció en esta pasada. Por eso "Seleccionar todos" no puede
+    # tocar `chk_<anexo>` directamente: se guarda la decisión y se renumeran
+    # las claves con un contador, de modo que en la siguiente pasada son
+    # widgets nuevos y sí aceptan el valor por defecto.
+    st.session_state.setdefault("gen_ronda", 0)
+    st.session_state.setdefault("gen_defecto", {})
 
-    # ------------------------------------------------------------------
-    # Botones de selección
-    # ------------------------------------------------------------------
-    c1, c2, c3 = st.columns([1, 1, 2])
+    def marcar(valor: bool, claves=None):
+        objetivo = claves if claves is not None else [a.clave for a in disponibles]
+        defecto = dict(st.session_state["gen_defecto"])
+        if claves is None:
+            defecto = {a.clave: valor for a in disponibles}
+        else:
+            for c in objetivo:
+                defecto[c] = valor
+        st.session_state["gen_defecto"] = defecto
+        st.session_state["gen_ronda"] += 1
 
-    c1.button(
-        "Seleccionar todos",
-        key="btn_seleccionar_todos",
-        on_click=seleccionar_todos,
-    )
+    c1, c2, c3, c4 = st.columns([1.1, 1.2, 1, 1.4])
+    if c1.button("Marcar todo", **ANCHO_BOTON):
+        marcar(True)
+        st.rerun()
+    if c2.button("Solo los 13 anexos", **ANCHO_BOTON):
+        marcar(False)
+        marcar(True, [a.clave for a in numerados])
+        st.rerun()
+    if c3.button("Solo informes", **ANCHO_BOTON):
+        marcar(False)
+        marcar(True, [a.clave for a in informes])
+        st.rerun()
+    if c4.button("Limpiar", **ANCHO_BOTON):
+        marcar(False)
+        st.rerun()
 
-    c2.button(
-        "Limpiar",
-        key="btn_limpiar_todos",
-        on_click=limpiar_todos,
-    )
-
-    a_pdf = c3.checkbox(
-        "Generar también en PDF",
-        help="Usa Word si está instalado; si no, LibreOffice.",
-    )
-
-    # ------------------------------------------------------------------
-    # Checkboxes de anexos
-    # ------------------------------------------------------------------
+    ronda = st.session_state["gen_ronda"]
+    defecto = st.session_state["gen_defecto"]
     seleccion = []
 
-    columnas = st.columns(3)
+    def rejilla(lista, prefijo):
+        columnas = st.columns(3)
+        for i, anexo in enumerate(lista):
+            etiqueta = (f"**Anexo {anexo.clave}** · {anexo.titulo}"
+                        if not anexo.clave.startswith("S")
+                        else f"**S/N {anexo.clave[1:]}** · {anexo.titulo}")
+            marcado = columnas[i % 3].checkbox(
+                etiqueta, value=bool(defecto.get(anexo.clave, False)),
+                key=f"chk_{prefijo}_{anexo.clave}_{ronda}", help=anexo.descripcion)
+            if marcado:
+                seleccion.append(anexo.clave)
 
-    for i, anexo in enumerate(disponibles):
-        col = columnas[i % 3]
+    st.subheader(f"Anexos numerados ({len(numerados)})")
+    rejilla(numerados, "num")
 
-        marcado = col.checkbox(
-            f"**Anexo {anexo.clave}** · {anexo.titulo}",
-            key=f"chk_{anexo.clave}",
-            help=anexo.descripcion,
-        )
+    st.subheader(f"Informes sin número ({len(informes)})")
+    st.caption("Son los que la Constancia lista como S/N. Se entregan junto con los anexos.")
+    rejilla(informes, "inf")
 
-        if marcado:
-            seleccion.append(anexo.clave)
+    st.divider()
+    c1, c2 = st.columns(2)
+    a_pdf = c1.checkbox("Generar también en PDF",
+                        help="Usa Word si está instalado; si no, LibreOffice.")
+    continuar = c2.checkbox(
+        "Continuar (no rehacer los que ya están)",
+        help="Retoma una tanda que se cortó a mitad. Déjelo sin marcar si "
+             "cambió datos y quiere rehacer todo.")
+    st.caption(f"Seleccionados: **{len(seleccion)}** de {len(disponibles)} documentos. "
+               "La tanda completa tarda varios minutos: **no cambie de sección ni "
+               "pulse otro botón mientras corre**, porque eso reinicia la página y "
+               "corta la generación.")
 
-    # ------------------------------------------------------------------
-    # Generar documentos
-    # ------------------------------------------------------------------
-    if st.button(
-        "Generar",
-        type="primary",
-        disabled=not seleccion,
-        key="btn_generar_anexos",
-    ):
+    if st.button("Generar", type="primary", disabled=not seleccion):
         carpeta = DIR_SALIDA
-
-        if carpeta.exists():
+        if carpeta.exists() and not continuar:
             shutil.rmtree(carpeta)
+        carpeta.mkdir(parents=True, exist_ok=True)
 
-        carpeta.mkdir(parents=True)
+        with st.spinner(f"Generando… ({len(seleccion)} anexos; puede tardar "
+                        "varios minutos, no toque la página)"):
+            resultado = generador.generar(seleccion, carpeta, a_pdf=a_pdf,
+                                          saltar_existentes=continuar)
 
-        with st.spinner("Generando documentos…"):
-            resultado = generador.generar(
-                seleccion,
-                carpeta,
-                a_pdf=a_pdf,
-            )
-
-        docx = [
-            a for a in resultado["archivos"]
-            if a.suffix == ".docx"
-        ]
-
-        pdfs = [
-            a for a in resultado["archivos"]
-            if a.suffix == ".pdf"
-        ]
-
-        st.success(
-            f"{len(docx)} documentos Word"
-            + (f" y {len(pdfs)} PDF" if pdfs else "")
-            + " generados."
-        )
-
+        docx = [a for a in resultado["archivos"] if a.suffix == ".docx"]
+        pdfs = [a for a in resultado["archivos"] if a.suffix == ".pdf"]
+        # Se avisa arriba y en rojo si alguno de los seleccionados no produjo
+        # ni un archivo: antes había que contarlos a mano para darse cuenta.
+        vacios = [c for c in seleccion
+                  if not any(a.name.startswith(generador.prefijo(c)) for a in docx)]
+        if vacios:
+            st.error("No se generó ningún archivo de: "
+                     + ", ".join(vacios)
+                     + ". Abra la bitácora de abajo para ver el motivo.")
+        st.success(f"{len(docx)} documentos Word" +
+                   (f" y {len(pdfs)} PDF" if pdfs else "") + " generados.")
         for error in resultado["errores"]:
             st.warning(error)
+        st.session_state["gen_ultima"] = [str(a) for a in resultado["archivos"]]
 
-        if resultado["archivos"]:
-            buffer = io.BytesIO()
+    _zona_descarga()
 
-            with zipfile.ZipFile(
-                buffer,
-                "w",
-                zipfile.ZIP_DEFLATED,
-            ) as z:
-                for archivo in resultado["archivos"]:
-                    z.write(archivo, archivo.name)
 
-            st.download_button(
-                "Descargar todo en un ZIP",
-                buffer.getvalue(),
-                file_name="anexos_vinculacion.zip",
-                mime="application/zip",
-            )
+def _zona_descarga():
+    """
+    Descarga de lo que haya en la carpeta de salida.
 
-    # ------------------------------------------------------------------
-    # Documentos existentes
-    # ------------------------------------------------------------------
-    existentes = (
-        sorted(DIR_SALIDA.glob("*.*"))
-        if DIR_SALIDA.exists()
-        else []
-    )
+    Se lee del disco y no de la última generación: así el ZIP sigue disponible
+    aunque se cambie de sección o se recargue la página, que es cuando antes
+    desaparecía el botón.
+    """
+    todos = sorted(DIR_SALIDA.glob("*.*")) if DIR_SALIDA.exists() else []
+    # La bitácora empieza por "_" y no es un documento de entrega.
+    bitacora = DIR_SALIDA / "_registro_generacion.txt"
+    existentes = [a for a in todos if not a.name.startswith("_")]
 
-    if existentes:
+    if bitacora.exists():
         st.divider()
+        texto = bitacora.read_text(encoding="utf-8", errors="replace")
+        fallos = [l for l in texto.splitlines() if "ERROR" in l or "0 documentos" in l]
+        cortada = "FIN ·" not in texto
+        if cortada:
+            fallos.append("La bitácora no llega al final: el proceso se cortó "
+                          "mientras generaba. Vuelva a pulsar Generar; si se "
+                          "vuelve a cortar en el mismo punto, reinicie la app.")
+        titulo = ("Bitácora de la última generación"
+                  + (f"  ·  {len(fallos)} problema(s)" if fallos else "  ·  sin problemas"))
+        with st.expander(titulo, expanded=bool(fallos)):
+            if fallos:
+                st.error("\n\n".join(fallos))
+            st.code(texto, language="text")
+            st.caption("Si la generación se corta a medias, la última línea dice "
+                       "en qué documento se quedó.")
 
-        st.subheader(
-            f"Documentos en la carpeta de salida "
-            f"({len(existentes)})"
-        )
+    if not existentes:
+        return
 
-        st.caption(f"Ruta: `{DIR_SALIDA}`")
+    st.divider()
+    st.subheader(f"Documentos generados ({len(existentes)})")
+    st.caption(f"Carpeta: `{DIR_SALIDA}`")
 
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as z:
         for archivo in existentes:
-            c1, c2 = st.columns([4, 1])
+            z.write(archivo, archivo.name)
+    st.download_button(f"⬇ Descargar los {len(existentes)} en un ZIP",
+                       buffer.getvalue(), file_name="anexos_vinculacion.zip",
+                       mime="application/zip", type="primary", **ANCHO_BOTON)
 
-            c1.write(archivo.name)
+    # Agrupados por documento, para ver de un vistazo qué salió y qué falta.
+    grupos = {}
+    for archivo in existentes:
+        etiqueta = archivo.name.split(" - ")[0]
+        grupos.setdefault(etiqueta, []).append(archivo)
 
-            c2.download_button(
-                "Descargar",
-                archivo.read_bytes(),
-                file_name=archivo.name,
-                key=f"dl_{archivo.name}",
-            )
+    def orden(clave: str):
+        m = re.match(r"(?:ANEXO|SN)\s*([\d.]+)", clave)
+        return (0 if clave.startswith("ANEXO") else 1,
+                float(m.group(1)) if m else 999)
+
+    for etiqueta in sorted(grupos, key=orden):
+        archivos = grupos[etiqueta]
+        with st.expander(f"{etiqueta}  ·  {len(archivos)} archivo(s)"):
+            for archivo in archivos:
+                c1, c2 = st.columns([4, 1])
+                c1.write(archivo.name)
+                c2.download_button("Descargar", archivo.read_bytes(),
+                                   file_name=archivo.name, key=f"dl_{archivo.name}")
 
 
 # --------------------------------------------------------------------------

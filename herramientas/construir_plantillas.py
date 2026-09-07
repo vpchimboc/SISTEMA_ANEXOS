@@ -558,6 +558,49 @@ def estructura_anexo10(doc) -> None:
         filas_a_borrar=list(range(2, 9)),
     )
 
+    # Cierre del informe: conclusiones y recomendaciones. En el original eran
+    # párrafos escritos a mano que nombraban la unidad educativa de la primera
+    # fase (Sayausí). Pasan a ser listas editables desde la app.
+    _bloque_de_vinetas(doc, "CONCLUSIONES", "RECOMENDACIONES",
+                       "for c in conclusiones", "{{ c.texto }}", "Anexo 10")
+    _bloque_de_vinetas(doc, "RECOMENDACIONES", "FIRMAS Y SELLOS",
+                       "for r in recomendaciones", "{{ r.texto }}", "Anexo 10")
+
+
+def _bloque_de_vinetas(doc, titulo: str, siguiente: str,
+                       expresion: str, contenido: str, etiqueta: str) -> None:
+    """
+    Convierte en bucle los párrafos que hay entre dos encabezados.
+
+    Se localizan por texto y no por índice: los índices cambian según lo que
+    hayan hecho las reglas anteriores, y el original de cada fase trae un
+    número distinto de párrafos en blanco.
+    """
+    parrafos = doc.paragraphs
+    def indice(rotulo: str, desde: int = 0) -> int:
+        for i in range(desde, len(parrafos)):
+            if parrafos[i].text.strip().upper().startswith(rotulo):
+                return i
+        return -1
+
+    ini = indice(titulo)
+    fin = indice(siguiente, ini + 1) if ini >= 0 else -1
+    if ini < 0 or fin < 0:
+        raise ValueError(f"{etiqueta}: no se encontró el bloque "
+                         f"{titulo} … {siguiente}")
+
+    bloque = [p for p in parrafos[ini + 1:fin] if not du.tiene_imagen(p)]
+    # Se descartan los blancos de arriba (son la separación del título, que se
+    # conserva) y los de abajo, y se incluyen los intermedios para que no
+    # queden líneas sueltas si el bucle emite menos viñetas que el original.
+    while bloque and not bloque[0].text.strip():
+        bloque.pop(0)
+    while bloque and not bloque[-1].text.strip():
+        bloque.pop()
+    if not bloque:
+        raise ValueError(f"{etiqueta}: el bloque {titulo} está vacío")
+    du.lista_a_bucle(bloque, expresion, contenido)
+
 
 # ==========================================================================
 # DOCUMENTOS ADICIONALES (sin número de anexo)
